@@ -1,8 +1,8 @@
-// src/components/PopularMovies.js
+// src/components/Popular.js
 import React, { useEffect, useState } from 'react';
 import { getPopularMovies } from '../api';
 
-const PopularMovies = () => {
+const Popular = () => {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -25,7 +25,7 @@ const PopularMovies = () => {
 
   return (
     <div>
-      <h2>Popular Movies</h2>
+      <h2>Popular Movies</h2> {/* 페이지 제목 */}
       <ul>
         {movies.map((movie) => (
           <li key={movie.id}>
@@ -38,4 +38,4 @@ const PopularMovies = () => {
   );
 };
 
-export default PopularMovies;
+export default Popular;
