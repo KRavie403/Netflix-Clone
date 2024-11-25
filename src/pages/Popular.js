@@ -25,7 +25,7 @@ const Popular = () => {
 
   return (
     <div>
-      <h2>Popular Movies</h2> {/* 페이지 제목 */}
+      <h2>Popular Movies</h2>
       <ul>
         {movies.map((movie) => (
           <li key={movie.id}>
