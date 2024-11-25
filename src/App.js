@@ -1,24 +1,26 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'; // Switch -> Routes로 변경
+import Header from './components/Header';
+import Home from './components/Home';
+import Popular from './components/Popular/popular';
+import Search from './components/Search';
+import Wishlist from './components/Wishlist';
+import SignIn from './components/SignIn';
+import SignUp from './components/SignUp';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Header />
+      <Routes> {/* Switch -> Routes로 변경 */}
+        {/* {<Route path="/" element={<Home />} />} */}
+        <Route path="/popular" element={<Popular />} />
+        {/* <Route path="/search" element={<Search />} />
+        <Route path="/wishlist" element={<Wishlist />} />
+        <Route path="/signin" element={<SignIn />} /> */}
+        {/* <Route path="/signup" element={<SignUp />} /> */}
+      </Routes>
+    </Router>
   );
 }
 
