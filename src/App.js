@@ -1,21 +1,21 @@
 import React from 'react';
 import { HashRouter as Router, Routes, Route } from 'react-router-dom';
-import Header from './components/Header';
-// import Home from './components/Home';
-import Popular from './components/Popular';
-// import Search from './components/Search';
-// import Wishlist from './components/Wishlist';
-// import SignIn from './components/SignIn';
-// import SignUp from './components/SignUp';
+import Header from './pages/Header';
+import Home from './pages/Home';
+import Popular from './pages/Popular';
+// import Search from './pages/Search';
+// import Wishlist from './pages/Wishlist';
+// import SignIn from './pages/SignIn';
+// import SignUp from './pages/SignUp';
 
 function App() {
   return (
     <Router>
       <Header />
-      <Routes> {/* Switch -> Routes로 변경 */}
-        {/* {<Route path="/" element={<Home />} />} */}
+      <Routes>
+        <Route path="/" element={<Home />} />
         <Route path="/popular" element={<Popular />} />
-        {/* <Route path="/search" element={<Search />} />
+        S{/* <Route path="/search" element={<Search />} />
         <Route path="/wishlist" element={<Wishlist />} />
         <Route path="/signin" element={<SignIn />} /> */}
         {/* <Route path="/signup" element={<SignUp />} /> */}
