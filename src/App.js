@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'; // Switch -> Routes로 변경
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 // import Home from './components/Home';
 import Popular from './components/Popular';
