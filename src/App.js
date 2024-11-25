@@ -1,8 +1,8 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'; // Switch -> Routes로 변경
 import Header from './components/Header';
 import Home from './components/Home';
-import Popular from './components/Popular';
+import Popular from './components/Popular/popular';
 import Search from './components/Search';
 import Wishlist from './components/Wishlist';
 import SignIn from './components/SignIn';
@@ -12,14 +12,14 @@ function App() {
   return (
     <Router>
       <Header />
-      <Switch>
-        <Route path="/" exact component={Home} />
-        <Route path="/popular" component={Popular} />
-        <Route path="/search" component={Search} />
-        <Route path="/wishlist" component={Wishlist} />
-        <Route path="/signin" component={SignIn} />
-        <Route path="/signup" component={SignUp} />
-      </Switch>
+      <Routes> {/* Switch -> Routes로 변경 */}
+        {/* {<Route path="/" element={<Home />} />} */}
+        <Route path="/popular" element={<Popular />} />
+        {/* <Route path="/search" element={<Search />} />
+        <Route path="/wishlist" element={<Wishlist />} />
+        <Route path="/signin" element={<SignIn />} /> */}
+        {/* <Route path="/signup" element={<SignUp />} /> */}
+      </Routes>
     </Router>
   );
 }
