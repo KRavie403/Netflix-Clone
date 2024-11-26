@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { NavLink } from "react-router-dom";
 import styles from '../styles/Navbar.module.css';
 import logo from '../assets/logo.png';
 import user from '../assets/user.png';
@@ -26,12 +27,26 @@ const Navbar = () => {
   return (
     <nav className={styles.navbar}>
       <div className={styles.logoContainer}>
-        <img src={logo} alt="Netflix Logo" className={styles.logo} />
+        <NavLink to="/home" activeClassName={styles.active}>
+          <img src={logo} alt="Netflix Logo" className={styles.logo} />
+        </NavLink>
       </div>
       <ul className={styles.navLinks}>
-        <li>홈</li>
-        <li>NEW! 요즘 대세 콘텐츠</li>
-        <li>내가 찜한 리스트</li>
+        <li>
+          <NavLink to="/home" activeClassName={styles.active}>
+            홈
+          </NavLink>
+        </li>
+        <li>
+          <NavLink to="/popular" activeClassName={styles.active}>
+            NEW! 요즘 대세 콘텐츠
+          </NavLink>
+        </li>
+        <li>
+          <NavLink to="/wishlist" activeClassName={styles.active}>
+            내가 찜한 리스트
+          </NavLink>
+        </li>
         <li>언어별로 찾아보기</li>
         <li className={styles.searchContainer}>
           <BiSearch
