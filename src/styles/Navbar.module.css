@@ -17,6 +17,7 @@
   
   .logo {
     height: 40px;
+    cursor: pointer;
   }
   
   .navLinks {
@@ -28,6 +29,7 @@
   }
   
   .navLinks li {
+    color: white;
     cursor: pointer;
     font-size: 14px;
     transition: color 0.3s ease;
@@ -37,6 +39,24 @@
     color: #e50914;
   }
   
+  .navLinks li .active {
+    color: white;
+    text-decoration: none;
+  }
+
+  .navLinks li a {
+    color: white;
+    text-decoration: none;
+  }
+
+  .navLinks li a:hover {
+    color: #e50914;
+  }
+
+  .navLinks li a:active {
+    color: white;
+  }
+
   .userActions {
     display: flex;
     align-items: center;
