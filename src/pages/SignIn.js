@@ -54,7 +54,7 @@ const SignIn = ({ onLogin }) => {
         if (data.success) {
           localStorage.setItem('authToken', data.request_token); // 토큰 저장
           localStorage.setItem('email', formData.email); // 이메일 저장
-          localStorage.setItem('password', formData.password); // 비밀번호 저장
+          localStorage.setItem('TMDb-Key', formData.password); // 비밀번호 저장
           alert('회원가입이 완료되었습니다. 로그인 화면으로 이동합니다.');
           setIsSignUp(false); // 로그인 화면으로 전환
         } else {
@@ -67,7 +67,7 @@ const SignIn = ({ onLogin }) => {
     } else {
       // 로그인 로직
       const storedEmail = localStorage.getItem('email');
-      const storedPassword = localStorage.getItem('password');
+      const storedPassword = localStorage.getItem('TMDb-Key');
       const storedToken = localStorage.getItem('authToken');
 
       if (
