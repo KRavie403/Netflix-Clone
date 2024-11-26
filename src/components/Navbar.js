@@ -55,7 +55,7 @@ const Navbar = ({ isLoggedIn, onLogout }) => {
       </div>
       <ul className={styles.navLinks}>
         <li>
-          <NavLink to="/home" activeClassName={styles.active}>
+          <NavLink to="/" activeClassName={styles.active}>
             홈
           </NavLink>
         </li>
