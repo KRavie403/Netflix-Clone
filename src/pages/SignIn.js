@@ -1,93 +1,95 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-
-toast.configure();
+import '../styles/SignIn.css';
+import logo from '../assets/logo.png';
 
 const SignIn = () => {
-  const [isLogin, setIsLogin] = useState(true); // 로그인/회원가입 상태
+  const [isSignUp, setIsSignUp] = useState(false); // 로그인 / 회원가입 토글 상태
   const [formData, setFormData] = useState({
     email: '',
     password: '',
     confirmPassword: '',
     rememberMe: false,
-    agreeTerms: false,
+    agreeTerms: false
   });
+
   const navigate = useNavigate();
 
-  // 폼 데이터 변경 처리
-  const handleChange = (e) => {
+  // 입력 값 처리
+  const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === 'checkbox' ? checked : value,
-    });
-  };
-
-  // 로그인 처리
-  const handleLogin = (e) => {
-    e.preventDefault();
-    const { email, password, rememberMe } = formData;
-
-    // 이메일 형식 검사
-    if (!/\S+@\S+\.\S+/.test(email)) {
-      toast.error('이메일 형식이 올바르지 않습니다.');
-      return;
-    }
-
-    // Local Storage에 저장
-    if (rememberMe) {
-      localStorage.setItem('email', email);
-      localStorage.setItem('password', password);
-    }
-
-    // 로그인 성공 처리
-    if (email === localStorage.getItem('email') && password === localStorage.getItem('password')) {
-      toast.success('로그인 성공!');
-      navigate('/');
+    if (type === 'checkbox') {
+      setFormData({ ...formData, [name]: checked });
     } else {
-      toast.error('로그인 실패! 아이디나 비밀번호를 확인하세요.');
+      setFormData({ ...formData, [name]: value });
     }
   };
 
-  // 회원가입 처리
-  const handleSignUp = (e) => {
+  // 로그인 / 회원가입 처리
+  const handleSubmit = (e) => {
     e.preventDefault();
-    const { email, password, confirmPassword, agreeTerms } = formData;
-
-    if (!/\S+@\S+\.\S+/.test(email)) {
-      toast.error('이메일 형식이 올바르지 않습니다.');
-      return;
-    }
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     
-    if (password !== confirmPassword) {
-      toast.error('비밀번호가 일치하지 않습니다.');
+    if (!emailRegex.test(formData.email)) {
+      alert("아이디는 유효한 이메일 형식이어야 합니다.");
       return;
     }
 
-    if (!agreeTerms) {
-      toast.error('약관에 동의해야 합니다.');
-      return;
-    }
+    if (isSignUp) {
+      if (formData.password !== formData.confirmPassword) {
+        alert('비밀번호가 일치하지 않습니다.');
+        return;
+      }
+      if (!formData.agreeTerms) {
+        alert('약관에 동의해야 회원가입이 가능합니다.');
+        return;
+      }
 
-    // 회원가입 성공 처리
-    localStorage.setItem('email', email);
-    localStorage.setItem('password', password);
-    toast.success('회원가입 성공! 로그인 페이지로 이동합니다.');
-    setIsLogin(true); // 로그인 창으로 전환
+      // TMDB API 예시 (TMDB API키를 사용하여 비밀번호를 확인하는 로직 필요)
+      const API_KEY = 'YOUR_TMDB_API_KEY';  // TMDB API 키 설정
+      const tmdbRequest = fetch(`https://api.themoviedb.org/3/authentication/token/new?api_key=${API_KEY}`);
+      
+      tmdbRequest.then(response => response.json()).then(data => {
+        if (data.success) {
+          // 회원가입 처리 (LocalStorage에 저장)
+          localStorage.setItem('email', formData.email);
+          localStorage.setItem('password', formData.password);
+          alert('회원가입이 완료되었습니다. 로그인 화면으로 이동합니다.');
+          setIsSignUp(false);
+        } else {
+          alert('API 연결 실패: 비밀번호 검증에 실패하였습니다.');
+        }
+      }).catch(error => alert('API 호출 실패'));
+    } else {
+      // 로그인 처리
+      const storedEmail = localStorage.getItem('email');
+      const storedPassword = localStorage.getItem('password');
+
+      if (formData.email === storedEmail && formData.password === storedPassword) {
+        alert('로그인 성공!');
+        if (formData.rememberMe) {
+          localStorage.setItem('rememberMe', 'true');
+        }
+        navigate('/'); // 메인 페이지로 이동
+      } else {
+        alert('아이디 또는 비밀번호가 잘못되었습니다.');
+      }
+    }
   };
 
   return (
-    <div className="signin-container">
-      <h1>{isLogin ? '로그인' : '회원가입'}</h1>
-      <form onSubmit={isLogin ? handleLogin : handleSignUp}>
+    <div className="signin-container transition-container">
+      <div className='logo-container'>
+        <img src={logo} className="logo" alt="logo" />
+      </div>
+      <h2>{isSignUp ? '회원가입' : '로그인'}</h2>
+      <form onSubmit={handleSubmit}>
         <input
           type="email"
           name="email"
           placeholder="이메일"
           value={formData.email}
-          onChange={handleChange}
+          onChange={handleInputChange}
           required
         />
         <input
@@ -95,48 +97,48 @@ const SignIn = () => {
           name="password"
           placeholder="비밀번호"
           value={formData.password}
-          onChange={handleChange}
+          onChange={handleInputChange}
           required
         />
-        {!isLogin && (
+        {isSignUp && (
           <>
             <input
               type="password"
               name="confirmPassword"
               placeholder="비밀번호 확인"
               value={formData.confirmPassword}
-              onChange={handleChange}
+              onChange={handleInputChange}
               required
             />
-            <label>
+            <div className="terms">
+              약관에 동의합니다.
               <input
                 type="checkbox"
                 name="agreeTerms"
                 checked={formData.agreeTerms}
-                onChange={handleChange}
+                onChange={handleInputChange}
+                required
               />
-              약관 동의
-            </label>
+            </div>
           </>
         )}
-        {isLogin && (
-          <>
-            <label>
-              <input
-                type="checkbox"
-                name="rememberMe"
-                checked={formData.rememberMe}
-                onChange={handleChange}
-              />
-              로그인 상태 유지
-            </label>
-          </>
-        )}
-        <button type="submit">{isLogin ? '로그인' : '회원가입'}</button>
+        <div className="remember-me">
+          아이디 기억하기
+          <input
+            type="checkbox"
+            name="rememberMe"
+            checked={formData.rememberMe}
+            onChange={handleInputChange}
+          />
+        </div>
+        <button type="submit">{isSignUp ? '회원가입' : '로그인'}</button>
       </form>
-      <button onClick={() => setIsLogin(!isLogin)}>
-        {isLogin ? '회원가입' : '로그인'} 화면으로 전환
-      </button>
+
+      <div className="toggle-btns">
+        <button onClick={() => setIsSignUp(!isSignUp)}>
+          {isSignUp ? '이미 계정이 있나요? 로그인' : '계정이 없나요? 회원가입'}
+        </button>
+      </div>
     </div>
   );
 };
