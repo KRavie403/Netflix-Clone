@@ -20,12 +20,12 @@ const Navbar = () => {
   // 로그아웃 함수
   const handleLogout = () => {
     setIsLoggedIn(false); // 로그아웃 후 로그인 상태 false로 변경
-    navigate("/login"); // 로그인 화면으로 이동
+    navigate("/signin"); // 로그인 화면으로 이동
   };
 
   // 로그인 화면으로 이동
   const handleLogin = () => {
-    navigate("/login"); // 로그인 화면으로 이동
+    navigate("/signin"); // 로그인 화면으로 이동
   };
 
   const handleSearchToggle = () => {
