@@ -15,27 +15,26 @@ const SignIn = () => {
 
   const navigate = useNavigate();
 
-  // 입력 값 처리
+  const API_KEY = process.env.REACT_APP_TMDB_API_KEY;
+
+  // 입력값 변경 처리
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
-    if (type === 'checkbox') {
-      setFormData({ ...formData, [name]: checked });
-    } else {
-      setFormData({ ...formData, [name]: value });
-    }
+    setFormData({ ...formData, [name]: type === 'checkbox' ? checked : value });
   };
 
-  // 로그인 / 회원가입 처리
-  const handleSubmit = (e) => {
+  // 로그인/회원가입 처리
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    
+
     if (!emailRegex.test(formData.email)) {
-      alert("아이디는 유효한 이메일 형식이어야 합니다.");
+      alert('아이디는 유효한 이메일 형식이어야 합니다.');
       return;
     }
 
     if (isSignUp) {
+      // 회원가입 로직
       if (formData.password !== formData.confirmPassword) {
         alert('비밀번호가 일치하지 않습니다.');
         return;
@@ -45,27 +44,37 @@ const SignIn = () => {
         return;
       }
 
-      // TMDB API 예시 (TMDB API키를 사용하여 비밀번호를 확인하는 로직 필요)
-      const API_KEY = 'YOUR_TMDB_API_KEY';  // TMDB API 키 설정
-      const tmdbRequest = fetch(`https://api.themoviedb.org/3/authentication/token/new?api_key=${API_KEY}`);
-      
-      tmdbRequest.then(response => response.json()).then(data => {
+      try {
+        // TMDB 인증 토큰 생성 요청
+        const response = await fetch(
+          `https://api.themoviedb.org/3/authentication/token/new?api_key=${API_KEY}`
+        );
+        const data = await response.json();
+
         if (data.success) {
-          // 회원가입 처리 (LocalStorage에 저장)
-          localStorage.setItem('email', formData.email);
-          localStorage.setItem('password', formData.password);
+          localStorage.setItem('authToken', data.request_token); // 토큰 저장
+          localStorage.setItem('email', formData.email); // 이메일 저장
+          localStorage.setItem('password', formData.password); // 비밀번호 저장
           alert('회원가입이 완료되었습니다. 로그인 화면으로 이동합니다.');
-          setIsSignUp(false);
+          setIsSignUp(false); // 로그인 화면으로 전환
         } else {
-          alert('API 연결 실패: 비밀번호 검증에 실패하였습니다.');
+          alert(`회원가입 실패: ${data.status_message}`);
         }
-      }).catch(error => alert('API 호출 실패'));
+      } catch (error) {
+        console.error('API 요청 실패:', error);
+        alert('회원가입 중 문제가 발생했습니다.');
+      }
     } else {
-      // 로그인 처리
+      // 로그인 로직
       const storedEmail = localStorage.getItem('email');
       const storedPassword = localStorage.getItem('password');
+      const storedToken = localStorage.getItem('authToken');
 
-      if (formData.email === storedEmail && formData.password === storedPassword) {
+      if (
+        formData.email === storedEmail &&
+        formData.password === storedPassword &&
+        storedToken
+      ) {
         alert('로그인 성공!');
         if (formData.rememberMe) {
           localStorage.setItem('rememberMe', 'true');
@@ -76,6 +85,19 @@ const SignIn = () => {
       }
     }
   };
+
+  // 로그인 / 회원가입 상태 변경 시 체크박스 초기화
+  const toggleSignUp = () => {
+    setIsSignUp(!isSignUp);
+    setFormData({
+      email: '',
+      password: '',
+      confirmPassword: '',
+      rememberMe: false, // "아이디 기억하기" 체크박스 리셋
+      agreeTerms: false // "약관 동의" 체크박스 리셋
+    });
+  };
+
 
   return (
     <div className="signin-container transition-container">
@@ -122,20 +144,26 @@ const SignIn = () => {
             </div>
           </>
         )}
-        <div className="remember-me">
-          아이디 기억하기
-          <input
-            type="checkbox"
-            name="rememberMe"
-            checked={formData.rememberMe}
-            onChange={handleInputChange}
-          />
-        </div>
+        {!isSignUp && (
+          <div className="remember-me">
+            아이디 기억하기
+            <input
+              type="checkbox"
+              name="rememberMe"
+              checked={formData.rememberMe}
+              onChange={handleInputChange}
+            />
+          </div>
+        )}
         <button type="submit">{isSignUp ? '회원가입' : '로그인'}</button>
       </form>
 
       <div className="toggle-btns">
-        <button onClick={() => setIsSignUp(!isSignUp)}>
+        <button onClick={() => {
+            setIsSignUp(!isSignUp);
+            toggleSignUp();  
+          }}
+        >
           {isSignUp ? '이미 계정이 있나요? 로그인' : '계정이 없나요? 회원가입'}
         </button>
       </div>
