@@ -17,10 +17,11 @@
   margin-top: 30px;
   margin-bottom: 50px;
   padding: 0 0px;
-  overflow-x: scroll;
+  overflow-x: auto;
   scroll-behavior: smooth;
   overflow: hidden;               /* 스크롤바 숨기기 */
   position: relative;             /* 화살표 버튼의 위치를 잡기 위해 */
+  scroll-snap-type: x mandatory;
 }
 
 /* 스크롤이 숨겨진 상태에서 화살표 버튼 */
