@@ -1,6 +1,7 @@
 import React from 'react';
 import styles from '../styles/Navbar.module.css';
 import logo from '../assets/logo.png';
+import user from '../assets/user.png';
 
 const Navbar = () => {
   return (
@@ -20,7 +21,7 @@ const Navbar = () => {
           <span className={styles.notificationBadge}>6</span>
         </i>
         <img
-          src="https://via.placeholder.com/32" 
+          src={user} 
           alt="User Avatar"
           className={styles.userAvatar}
         />
