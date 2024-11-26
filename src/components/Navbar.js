@@ -13,8 +13,9 @@ const Navbar = ({ isLoggedIn, onLogout }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const user = localStorage.getItem('currentUser');
+    console.log(`로그인 상태: ${isLoggedIn ? '로그인됨' : '로그아웃됨'}`);
     if (isLoggedIn) {
+      const user = localStorage.getItem('currentUser');
       setCurrentUser(user);
     } else {
       setCurrentUser(null);
