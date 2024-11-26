@@ -83,7 +83,7 @@
   .userAvatar {
     height: 32px;
     border-radius: 4px;
-    padding-right: 20px;
+    padding-right: 30px;
     cursor: pointer;
   }
   
@@ -133,4 +133,32 @@
 
 .searchButton:hover {
   background: #b20710;
+}
+
+.dropdownMenu {
+  position: absolute;
+  top: 70px;
+  right: 40px;
+  width: 100px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  text-align: center;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.dropdownMenu button {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 10px;
+  width: 100%;
+  text-align: left;
+}
+
+.dropdownMenu button:hover {
+  background: rgba(255, 255, 255, 0.1);
 }
