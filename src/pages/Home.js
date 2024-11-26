@@ -1,12 +1,14 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
   const navigate = useNavigate();
 
-  if (!localStorage.getItem('email') || !localStorage.getItem('password')) {
-    navigate('/signin');
-  }
+  useEffect(() => {
+    if (!localStorage.getItem('email') || !localStorage.getItem('password')) {
+      navigate('/signin');
+    }
+  }, [navigate]);
 
   return (
     <div>

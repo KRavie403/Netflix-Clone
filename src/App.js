@@ -8,7 +8,11 @@ import Wishlist from './pages/Wishlist';
 import SignIn from './pages/SignIn';
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // 로그인 상태 관리
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const handleLogin = () => {
+    setIsLoggedIn(true);
+  };
 
   return (
     <Router>
@@ -17,7 +21,7 @@ function App() {
       
       <Routes>
         {/* 로그인 경로 */}
-        <Route path="/signin" element={<SignIn onLogin={() => setIsLoggedIn(true)} />} />
+        <Route path="/signin" element={<SignIn onLogin={handleLogin} />} />
 
         {/* 로그인되지 않았으면 /signin으로 리디렉션 */}
         <Route path="/" element={isLoggedIn ? <Home /> : <Navigate to="/signin" />} />

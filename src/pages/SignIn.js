@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import '../styles/SignIn.css';
 import logo from '../assets/logo.png';
 
-const SignIn = () => {
+const SignIn = ({ onLogin }) => {
   const [isSignUp, setIsSignUp] = useState(false); // 로그인 / 회원가입 토글 상태
   const [formData, setFormData] = useState({
     email: '',
@@ -76,6 +76,7 @@ const SignIn = () => {
         storedToken
       ) {
         alert('로그인 성공!');
+        onLogin();
         if (formData.rememberMe) {
           localStorage.setItem('rememberMe', 'true');
         }
