@@ -5,43 +5,29 @@ import logo from '../assets/logo.png';
 import user from '../assets/user.png';
 import { BiSearch } from "react-icons/bi";
 
-const Navbar = () => {
-  const [searchOpen, setSearchOpen] = useState(false); // 검색창 열기/닫기 상태
-  const [searchQuery, setSearchQuery] = useState(''); // 검색어 상태
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // 로그인 상태
-  const [dropdownOpen, setDropdownOpen] = useState(false); // 드롭다운 메뉴 열기/닫기 상태
+const Navbar = ({ isLoggedIn, onLogout }) => { // isLoggedIn과 onLogout을 props로 받음
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const navigate = useNavigate();
 
-  // 프로필 클릭 시 드롭다운 열기/닫기
   const handleDropdownToggle = () => {
     setDropdownOpen(!dropdownOpen);
   };
 
-  // 로그아웃 함수
-  const handleLogout = () => {
-    setIsLoggedIn(false); // 로그아웃 후 로그인 상태 false로 변경
-    navigate("/signin"); // 로그인 화면으로 이동
-  };
-
-  // 로그인 화면으로 이동
-  const handleLogin = () => {
-    navigate("/signin"); // 로그인 화면으로 이동
-  };
-
   const handleSearchToggle = () => {
-    setSearchOpen(!searchOpen); // 검색창 열고 닫기 토글
+    setSearchOpen(!searchOpen);
   };
 
   const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value); // 검색어 업데이트
+    setSearchQuery(e.target.value);
   };
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    alert(`검색된 내용: ${searchQuery}`); // 검색 동작 (알림으로 표시)
-    setSearchQuery(''); // 입력 초기화
+    alert(`검색된 내용: ${searchQuery}`);
+    setSearchQuery('');
   };
-
 
   return (
     <nav className={styles.navbar}>
@@ -99,9 +85,9 @@ const Navbar = () => {
         {dropdownOpen && (
           <div className={styles.dropdownMenu}>
             {!isLoggedIn ? (
-              <button onClick={handleLogin}>로그인</button>
+              <button onClick={() => navigate('/signin')}>로그인</button>
             ) : (
-              <button onClick={handleLogout}>로그아웃</button>
+              <button onClick={onLogout}>로그아웃</button>
             )}
           </div>
         )}
