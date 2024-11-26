@@ -1,11 +1,18 @@
 import React from "react";
+import { useNavigate } from 'react-router-dom';
 
-function Home() {
+const Home = () => {
+  const navigate = useNavigate();
+
+  if (!localStorage.getItem('email') || !localStorage.getItem('password')) {
+    navigate('/signin');
+  }
+
   return (
-    <>
-        <h1>home</h1>
-    </>
+    <div>
+      <h1>메인 페이지</h1>
+    </div>
   );
-}
+};
 
 export default Home;
