@@ -1,15 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink, useNavigate } from "react-router-dom";
 import styles from '../styles/Navbar.module.css';
 import logo from '../assets/logo.png';
 import user from '../assets/user.png';
 import { BiSearch } from "react-icons/bi";
 
-const Navbar = ({ isLoggedIn, onLogout }) => { // isLoggedIn과 onLogout을 props로 받음
+const Navbar = ({ isLoggedIn, onLogout }) => {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const user = localStorage.getItem('currentUser');
+    if (isLoggedIn) {
+      setCurrentUser(user);
+    } else {
+      setCurrentUser(null);
+    }
+  }, [isLoggedIn]);
 
   const handleDropdownToggle = () => {
     setDropdownOpen(!dropdownOpen);
@@ -27,6 +37,12 @@ const Navbar = ({ isLoggedIn, onLogout }) => { // isLoggedIn과 onLogout을 prop
     e.preventDefault();
     alert(`검색된 내용: ${searchQuery}`);
     setSearchQuery('');
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('currentUser');
+    onLogout();
+    navigate('/signin');
   };
 
   return (
@@ -76,6 +92,9 @@ const Navbar = ({ isLoggedIn, onLogout }) => { // isLoggedIn과 onLogout을 prop
         </li>
       </ul>
       <div className={styles.userActions}>
+        {currentUser && (
+          <span className={styles.userEmail}> {currentUser}</span>
+        )}
         <img
           src={user}
           alt="User Avatar"
@@ -87,7 +106,7 @@ const Navbar = ({ isLoggedIn, onLogout }) => { // isLoggedIn과 onLogout을 prop
             {!isLoggedIn ? (
               <button onClick={() => navigate('/signin')}>로그인</button>
             ) : (
-              <button onClick={onLogout}>로그아웃</button>
+              <button onClick={handleLogout}>로그아웃</button>
             )}
           </div>
         )}

@@ -76,6 +76,7 @@ const SignIn = ({ onLogin }) => {
         storedToken
       ) {
         alert('로그인 성공!');
+        localStorage.setItem('currentUser', formData.email);
         onLogin();
         if (formData.rememberMe) {
           localStorage.setItem('rememberMe', 'true');
