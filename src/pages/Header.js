@@ -1,9 +1,12 @@
 import React from "react";
+import Navbar from "../components/Navbar";
 
 function Header() {
     return (
       <>
-        <h1>Header</h1>
+        <Navbar />
+        <div style={{ paddingTop: "60px" }}>
+        </div>
       </>
     );
   }
