@@ -22,8 +22,8 @@
   .navLinks {
     display: flex;
     list-style: none;
-    flex: 3;
-    justify-content: center;
+    flex: 20;
+    justify-content: left;
     gap: 20px;
   }
   
@@ -63,6 +63,7 @@
   .userAvatar {
     height: 32px;
     border-radius: 4px;
+    padding-right: 20px;
     cursor: pointer;
   }
   
