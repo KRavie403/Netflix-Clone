@@ -67,3 +67,50 @@
     cursor: pointer;
   }
   
+
+.searchContainer {
+  position: relative;
+}
+
+.searchIcon {
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.searchForm {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  top: -5px;
+  left: 30px;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 5px;
+  border-radius: 4px;
+}
+
+.searchInput {
+  border: none;
+  background: transparent;
+  color: white;
+  padding: 5px;
+  margin-right: 5px;
+  font-size: 14px;
+  outline: none;
+}
+
+.searchButton {
+  background: #e50914;
+  color: white;
+  border: none;
+  padding: 5px 20px;
+  border-radius: 4px;
+  font-size: 12px;
+  text-align: center;
+  cursor: pointer;
+  transition: background 0.5s ease;
+  white-space: nowrap;
+}
+
+.searchButton:hover {
+  background: #b20710;
+}
