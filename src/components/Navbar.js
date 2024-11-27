@@ -13,14 +13,14 @@ const Navbar = ({ isLoggedIn, onLogout }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log(`로그인 상태: ${isLoggedIn ? '로그인됨' : '로그아웃됨'}`);
-    if (isLoggedIn) {
-      const user = localStorage.getItem('currentUser');
-      setCurrentUser(user);
+    // 로그인 상태에 따라 localStorage에서 사용자 정보 가져오기
+    const userEmail = localStorage.getItem('currentUser');
+    if (userEmail) {
+      setCurrentUser(userEmail); // 사용자 이메일 상태 업데이트
     } else {
-      setCurrentUser(null);
+      setCurrentUser(null); // 로그인하지 않으면 null로 설정
     }
-  }, [isLoggedIn]);
+  }, [isLoggedIn]); // 로그인 상태가 변경될 때마다 업데이트
 
   const handleDropdownToggle = () => {
     setDropdownOpen(!dropdownOpen);
@@ -53,7 +53,7 @@ const Navbar = ({ isLoggedIn, onLogout }) => {
     <nav className={styles.navbar}>
       <div className={styles.logoContainer}>
         <NavLink to="/" activeClassName={styles.active}>
-          <img src={logo} alt="Netflix Logo" className={styles.logo} />
+          <img src={logo} alt="N Logo" className={styles.logo} />
         </NavLink>
       </div>
       <ul className={styles.navLinks}>
@@ -112,7 +112,7 @@ const Navbar = ({ isLoggedIn, onLogout }) => {
         {dropdownOpen && (
           <div className={styles.dropdownMenu}>
             {!isLoggedIn ? (
-              <button onClick={() => navigate('/signin')}>로그인</button>
+              <button onClick={() => navigate('/signin')}>로그아웃</button>
             ) : (
               <button onClick={handleLogout}>로그아웃</button>
             )}
