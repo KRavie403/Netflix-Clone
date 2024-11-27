@@ -52,7 +52,7 @@ const Navbar = ({ isLoggedIn, onLogout }) => {
   return (
     <nav className={styles.navbar}>
       <div className={styles.logoContainer}>
-        <NavLink to="/home" activeClassName={styles.active}>
+        <NavLink to="/" activeClassName={styles.active}>
           <img src={logo} alt="Netflix Logo" className={styles.logo} />
         </NavLink>
       </div>
