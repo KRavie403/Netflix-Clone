@@ -17,11 +17,12 @@
   margin-top: 30px;
   margin-bottom: 50px;
   padding: 0 0px;
-  overflow-x: auto;
+  overflow-x: auto;               /* 스크롤바는 보이지 않음 */
   scroll-behavior: smooth;
-  overflow: hidden;               /* 스크롤바 숨기기 */
   position: relative;             /* 화살표 버튼의 위치를 잡기 위해 */
   scroll-snap-type: x mandatory;
+  -ms-overflow-style: none;       /* IE 및 Edge에서 스크롤바 숨기기 */
+  scrollbar-width: none;          /* Firefox에서 스크롤바 숨기기 */
 }
 
 /* 스크롤이 숨겨진 상태에서 화살표 버튼 */
@@ -39,8 +40,11 @@
   opacity: 0;
   transition: opacity 0.3s ease;
   font-size: 20px;
+  width: 40px;  /* 버튼 크기 */
+  height: 40px; /* 버튼 크기 */
 }
 
+/* 화살표 버튼의 호버 효과 */
 .movie-list:hover .arrow-button {
   opacity: 1;
 }
@@ -51,12 +55,12 @@
 
 /* 왼쪽 화살표 */
 .arrow-left {
-  left: 10px;
+  left: 10px;  /* 왼쪽 버튼 위치 */
 }
 
 /* 오른쪽 화살표 */
 .arrow-right {
-  right: 10px;
+  right: 10px;  /* 오른쪽 버튼 위치 */
 }
 
 /* 영화 항목 카드 */

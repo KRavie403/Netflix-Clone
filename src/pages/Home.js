@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from 'react-router-dom';
 import { getPopularMovies, getNowPlayingMovies, getTopRatedMovies, getUpcomingMovies } from '../utils/URL.ts';
-import styles from '../styles/Home.module.css';  // CSS 모듈 임포트
+import styles from '../styles/Home.module.css';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -13,9 +13,16 @@ const Home = () => {
   });
 
   const [loading, setLoading] = useState(true);
-  const [currentIndex, setCurrentIndex] = useState(0);
 
-  const movieListRef = useRef(null);
+  const [popularIndex, setPopularIndex] = useState(0);
+  const [nowPlayingIndex, setNowPlayingIndex] = useState(0);
+  const [topRatedIndex, setTopRatedIndex] = useState(0);
+  const [upcomingIndex, setUpcomingIndex] = useState(0);
+
+  const popularRef = useRef(null);
+  const nowPlayingRef = useRef(null);
+  const topRatedRef = useRef(null);
+  const upcomingRef = useRef(null);
 
   useEffect(() => {
     if (!localStorage.getItem('email') || !localStorage.getItem('TMDb-Key')) {
@@ -50,31 +57,31 @@ const Home = () => {
     return <div>Loading...</div>;
   }
 
-  // 6개씩 스크롤 이동 함수
-  const moveLeft = () => {
-    setCurrentIndex(Math.max(currentIndex - 6, 0)); // 왼쪽으로 6개씩 이동
-  };
-
-  const moveRight = () => {
-    setCurrentIndex(Math.min(currentIndex + 6, movies.popular.length - 6)); // 오른쪽으로 6개씩 이동
-  };
-
-  // 영화 목록을 현재 인덱스를 기준으로 슬라이드
-  const visibleMovies = (category) => {
-    const startIndex = currentIndex;
-    const endIndex = currentIndex + 6;
+  const visibleMovies = (category, index) => {
+    const startIndex = index;
+    const endIndex = index + 6;
     return category.slice(startIndex, endIndex);
+  };
+
+  const moveLeft = (ref, setIndex, category, currentIndex) => {
+    const list = ref.current;
+    setIndex(Math.max(0, currentIndex - 6));
+    list.scrollLeft -= 300;
+  };
+
+  const moveRight = (ref, setIndex, category, currentIndex) => {
+    const list = ref.current;
+    setIndex(Math.min(category.length - 6, currentIndex + 6));
+    list.scrollLeft += 300;
   };
 
   return (
     <div className={styles['home-container']}>
-      <h1>메인 페이지</h1>
 
-      {/* 인기 영화 */}
       <section>
         <h2>인기 영화</h2>
-        <div className={styles['movie-list']} ref={movieListRef}>
-          {visibleMovies(movies.popular).map((movie) => (
+        <div className={styles['movie-list']} ref={popularRef}>
+          {visibleMovies(movies.popular, popularIndex).map((movie) => (
             <div key={movie.id} className={styles['movie-item']}>
               <img
                 src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
@@ -88,17 +95,15 @@ const Home = () => {
               <p><strong>장르:</strong> {movie.genre_ids.join(', ')}</p>
             </div>
           ))}
-          {/* 화살표 버튼 */}
-          <button className={`${styles['arrow-button']} ${styles['arrow-left']}`} onClick={moveLeft}>{"<"}</button>
-          <button className={`${styles['arrow-button']} ${styles['arrow-right']}`} onClick={moveRight}>{">"}</button>
+          <button className={`${styles['arrow-button']} ${styles['arrow-left']}`} onClick={() => moveLeft(popularRef, setPopularIndex, movies.popular, popularIndex)}>{"<"}</button>
+          <button className={`${styles['arrow-button']} ${styles['arrow-right']}`} onClick={() => moveRight(popularRef, setPopularIndex, movies.popular, popularIndex)}>{">"}</button>
         </div>
       </section>
 
-      {/* 현재 상영작 */}
       <section>
         <h2>현재 상영작</h2>
-        <div className={styles['movie-list']} ref={movieListRef}>
-          {visibleMovies(movies.nowPlaying).map((movie) => (
+        <div className={styles['movie-list']} ref={nowPlayingRef}>
+          {visibleMovies(movies.nowPlaying, nowPlayingIndex).map((movie) => (
             <div key={movie.id} className={styles['movie-item']}>
               <img
                 src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
@@ -112,17 +117,15 @@ const Home = () => {
               <p><strong>장르:</strong> {movie.genre_ids.join(', ')}</p>
             </div>
           ))}
-          {/* 화살표 버튼 */}
-          <button className={`${styles['arrow-button']} ${styles['arrow-left']}`} onClick={moveLeft}>{"<"}</button>
-          <button className={`${styles['arrow-button']} ${styles['arrow-right']}`} onClick={moveRight}>{">"}</button>
+          <button className={`${styles['arrow-button']} ${styles['arrow-left']}`} onClick={() => moveLeft(nowPlayingRef, setNowPlayingIndex, movies.nowPlaying, nowPlayingIndex)}>{"<"}</button>
+          <button className={`${styles['arrow-button']} ${styles['arrow-right']}`} onClick={() => moveRight(nowPlayingRef, setNowPlayingIndex, movies.nowPlaying, nowPlayingIndex)}>{">"}</button>
         </div>
       </section>
 
-      {/* 평점 높은 영화 */}
       <section>
         <h2>평점 높은 영화</h2>
-        <div className={styles['movie-list']} ref={movieListRef}>
-          {visibleMovies(movies.topRated).map((movie) => (
+        <div className={styles['movie-list']} ref={topRatedRef}>
+          {visibleMovies(movies.topRated, topRatedIndex).map((movie) => (
             <div key={movie.id} className={styles['movie-item']}>
               <img
                 src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
@@ -136,17 +139,15 @@ const Home = () => {
               <p><strong>장르:</strong> {movie.genre_ids.join(', ')}</p>
             </div>
           ))}
-          {/* 화살표 버튼 */}
-          <button className={`${styles['arrow-button']} ${styles['arrow-left']}`} onClick={moveLeft}>{"<"}</button>
-          <button className={`${styles['arrow-button']} ${styles['arrow-right']}`} onClick={moveRight}>{">"}</button>
+          <button className={`${styles['arrow-button']} ${styles['arrow-left']}`} onClick={() => moveLeft(topRatedRef, setTopRatedIndex, movies.topRated, topRatedIndex)}>{"<"}</button>
+          <button className={`${styles['arrow-button']} ${styles['arrow-right']}`} onClick={() => moveRight(topRatedRef, setTopRatedIndex, movies.topRated, topRatedIndex)}>{">"}</button>
         </div>
       </section>
 
-      {/* 다가오는 영화 */}
       <section>
         <h2>다가오는 영화</h2>
-        <div className={styles['movie-list']} ref={movieListRef}>
-          {visibleMovies(movies.upcoming).map((movie) => (
+        <div className={styles['movie-list']} ref={upcomingRef}>
+          {visibleMovies(movies.upcoming, upcomingIndex).map((movie) => (
             <div key={movie.id} className={styles['movie-item']}>
               <img
                 src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
@@ -160,9 +161,8 @@ const Home = () => {
               <p><strong>장르:</strong> {movie.genre_ids.join(', ')}</p>
             </div>
           ))}
-          {/* 화살표 버튼 */}
-          <button className={`${styles['arrow-button']} ${styles['arrow-left']}`} onClick={moveLeft}>{"<"}</button>
-          <button className={`${styles['arrow-button']} ${styles['arrow-right']}`} onClick={moveRight}>{">"}</button>
+          <button className={`${styles['arrow-button']} ${styles['arrow-left']}`} onClick={() => moveLeft(upcomingRef, setUpcomingIndex, movies.upcoming, upcomingIndex)}>{"<"}</button>
+          <button className={`${styles['arrow-button']} ${styles['arrow-right']}`} onClick={() => moveRight(upcomingRef, setUpcomingIndex, movies.upcoming, upcomingIndex)}>{">"}</button>
         </div>
       </section>
     </div>
