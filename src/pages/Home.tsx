@@ -2,7 +2,10 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from 'react-router-dom';
 import { getPopularMovies, getNowPlayingMovies, getTopRatedMovies, getUpcomingMovies } from '../utils/URL.tsx';
 import styles from '../styles/Home.module.css';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
+
+// Home 페이지 컴포넌트
 const Home = () => {
   const navigate = useNavigate();
   const [movies, setMovies] = useState({
@@ -11,10 +14,11 @@ const Home = () => {
     topRated: [],
     upcoming: []
   });
-
   const [loading, setLoading] = useState(true);
-  const [wishlist, setWishlist] = useState<number[]>([]); // 위시리스트 상태 관리
+  const [wishlist, setWishlist] = useState<number[]>([]); // 즐겨찾기 영화 목록
   const [hoveredMovie, setHoveredMovie] = useState<number | null>(null); // 마우스를 올린 영화의 id
+  const [recentSearches, setRecentSearches] = useState<string[]>([]); // 최근 검색어
+  const [genres, setGenres] = useState<string[]>([]); // 장르 목록
 
   const [nowPlayingIndex, setNowPlayingIndex] = useState(0);
   const [topRatedIndex, setTopRatedIndex] = useState(0);
@@ -52,9 +56,47 @@ const Home = () => {
     }
   }, [navigate]);
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  useEffect(() => {
+    // 로컬 스토리지에서 최근 검색어 및 즐겨찾기 영화 목록 가져오기
+    const storedSearches = JSON.parse(localStorage.getItem('recentSearches') || '[]');
+    const storedWishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
+    const storedGenres = JSON.parse(localStorage.getItem('genres') || '[]');
+    
+    setRecentSearches(storedSearches);
+    setWishlist(storedWishlist);
+    setGenres(storedGenres);
+  }, []);
+
+  const handleSearch = (searchTerm: string) => {
+    if (searchTerm && !recentSearches.includes(searchTerm)) {
+      const updatedSearches = [searchTerm, ...recentSearches].slice(0, 5); // 최대 5개의 검색어만 저장
+      setRecentSearches(updatedSearches);
+      localStorage.setItem('recentSearches', JSON.stringify(updatedSearches));
+    }
+    // 검색 수행 로직 추가
+  };
+
+  const toggleWishlist = (movieId: number) => {
+    setWishlist(prevState => {
+      const updatedWishlist = prevState.includes(movieId)
+        ? prevState.filter(id => id !== movieId)
+        : [...prevState, movieId];
+      
+      localStorage.setItem('wishlist', JSON.stringify(updatedWishlist)); // 로컬 스토리지에 저장
+      return updatedWishlist;
+    });
+  };
+
+  const handleGenreSelection = (genre: string) => {
+    setGenres(prevGenres => {
+      const updatedGenres = prevGenres.includes(genre)
+        ? prevGenres.filter(g => g !== genre)
+        : [...prevGenres, genre];
+      
+      localStorage.setItem('genres', JSON.stringify(updatedGenres)); // 로컬 스토리지에 저장
+      return updatedGenres;
+    });
+  };
 
   const visibleMovies = (category, index) => {
     const startIndex = index;
@@ -74,15 +116,9 @@ const Home = () => {
     list.scrollLeft += 300;
   };
 
-  const toggleWishlist = (movieId: number) => {
-    setWishlist(prevState => {
-      if (prevState.includes(movieId)) {
-        return prevState.filter(id => id !== movieId);
-      } else {
-        return [...prevState, movieId];
-      }
-    });
-  };
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className={styles['home-container']}>
@@ -93,8 +129,8 @@ const Home = () => {
             <div
               key={movie.id}
               className={styles['movie-item']}
-              onMouseEnter={() => setHoveredMovie(movie.id)} // 마우스를 올리면 해당 영화 정보 표시
-              onMouseLeave={() => setHoveredMovie(null)} // 마우스를 떼면 팝업 닫기
+              onMouseEnter={() => setHoveredMovie(movie.id)}
+              onMouseLeave={() => setHoveredMovie(null)}
             >
               <img
                 src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
@@ -104,7 +140,6 @@ const Home = () => {
               <h3 className={styles['movie-title']}>{movie.title}</h3>
               <p className={styles['movie-rating']}>평점: {movie.vote_average}</p>
 
-              {/* 마우스를 올리면 포스터 위에 큰 팝업을 띄운다 */}
               {hoveredMovie === movie.id && (
                 <div className={styles['movie-popup']}>
                   <div className={styles['popup-wrapper']}>
@@ -136,8 +171,8 @@ const Home = () => {
             <div
               key={movie.id}
               className={styles['movie-item']}
-              onMouseEnter={() => setHoveredMovie(movie.id)} // 마우스를 올리면 해당 영화 정보 표시
-              onMouseLeave={() => setHoveredMovie(null)} // 마우스를 떼면 팝업 닫기
+              onMouseEnter={() => setHoveredMovie(movie.id)}
+              onMouseLeave={() => setHoveredMovie(null)}
             >
               <img
                 src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
@@ -147,7 +182,6 @@ const Home = () => {
               <h3 className={styles['movie-title']}>{movie.title}</h3>
               <p className={styles['movie-rating']}>평점: {movie.vote_average}</p>
 
-              {/* 포스터 위에 팝업창을 띄운다 */}
               {hoveredMovie === movie.id && (
                 <div className={styles['movie-popup']}>
                   <img
@@ -162,9 +196,9 @@ const Home = () => {
                     <p>{movie.overview}</p>
                     <button 
                       onClick={() => toggleWishlist(movie.id)} 
-                      className={styles['wishlist-button']}
+                      className={wishlist.includes(movie.id) ? styles['added-to-wishlist'] : ''}
                     >
-                      {wishlist.includes(movie.id) ? '✔' : '+'}
+                      {wishlist.includes(movie.id) ? '즐겨찾기에서 삭제' : '즐겨찾기에 추가'}
                     </button>
                   </div>
                 </div>
@@ -177,14 +211,14 @@ const Home = () => {
       </section>
 
       <section>
-        <h2>개봉 예정 영화</h2>
+        <h2>다음 상영작</h2>
         <div className={styles['movie-list']} ref={upcomingRef}>
           {visibleMovies(movies.upcoming, upcomingIndex).map((movie) => (
             <div
               key={movie.id}
               className={styles['movie-item']}
-              onMouseEnter={() => setHoveredMovie(movie.id)} // 마우스를 올리면 해당 영화 정보 표시
-              onMouseLeave={() => setHoveredMovie(null)} // 마우스를 떼면 팝업 닫기
+              onMouseEnter={() => setHoveredMovie(movie.id)}
+              onMouseLeave={() => setHoveredMovie(null)}
             >
               <img
                 src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
@@ -194,26 +228,13 @@ const Home = () => {
               <h3 className={styles['movie-title']}>{movie.title}</h3>
               <p className={styles['movie-rating']}>평점: {movie.vote_average}</p>
 
-              {/* 포스터 위에 팝업창을 띄운다 */}
               {hoveredMovie === movie.id && (
                 <div className={styles['movie-popup']}>
-                  <img
-                    src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
-                    alt={movie.title}
-                    className={styles['popup-poster']}
-                  />
-                  <div className={styles['popup-details']}>
-                    <h3>{movie.title}</h3>
-                    <p><strong>개봉일:</strong> {movie.release_date}</p>
-                    <p><strong>평점:</strong> {movie.vote_average}</p>
-                    <p>{movie.overview}</p>
-                    <button 
-                      onClick={() => toggleWishlist(movie.id)} 
-                      className={styles['wishlist-button']}
-                    >
-                      {wishlist.includes(movie.id) ? '✔' : '+'}
-                    </button>
-                  </div>
+                  <h3>{movie.title}</h3>
+                  <p>{movie.overview}</p>
+                  <button onClick={() => toggleWishlist(movie.id)}>
+                    {wishlist.includes(movie.id) ? '즐겨찾기에서 삭제' : '즐겨찾기에 추가'}
+                  </button>
                 </div>
               )}
             </div>
