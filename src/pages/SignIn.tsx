@@ -3,33 +3,29 @@ import { useNavigate } from 'react-router-dom';
 import '../styles/SignIn.css';
 import logo from '../assets/logo.png';
 
-// SignInProps 인터페이스 정의
 interface SignInProps {
   onLogin: () => void;
   onLogout: () => void;
 }
 
 const SignIn: React.FC<SignInProps> = ({ onLogin, onLogout }) => {
-  const [isSignUp, setIsSignUp] = useState<boolean>(false); // 로그인 / 회원가입 토글 상태
+  const [isSignUp, setIsSignUp] = useState<boolean>(false);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
     confirmPassword: '',
     rememberMe: false,
-    agreeTerms: false
+    agreeTerms: false,
   });
 
   const navigate = useNavigate();
-
   const API_KEY = process.env.REACT_APP_TMDB_API_KEY;
 
-  // 입력값 변경 처리
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
     setFormData({ ...formData, [name]: type === 'checkbox' ? checked : value });
   };
 
-  // 로그인/회원가입 처리
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -40,7 +36,6 @@ const SignIn: React.FC<SignInProps> = ({ onLogin, onLogout }) => {
     }
 
     if (isSignUp) {
-      // 회원가입 로직
       if (formData.password !== formData.confirmPassword) {
         alert('비밀번호가 일치하지 않습니다.');
         return;
@@ -51,18 +46,17 @@ const SignIn: React.FC<SignInProps> = ({ onLogin, onLogout }) => {
       }
 
       try {
-        // TMDB 인증 토큰 생성 요청
         const response = await fetch(
           `https://api.themoviedb.org/3/authentication/token/new?api_key=${API_KEY}`
         );
         const data = await response.json();
 
         if (data.success) {
-          localStorage.setItem('authToken', data.request_token); // 토큰 저장
-          localStorage.setItem('email', formData.email); // 이메일 저장
-          localStorage.setItem('TMDB-Key', formData.password); // 비밀번호 저장
+          localStorage.setItem('authToken', data.request_token);
+          localStorage.setItem('email', formData.email);
+          localStorage.setItem('TMDB-Key', formData.password);
           alert('회원가입이 완료되었습니다. 로그인 화면으로 이동합니다.');
-          setIsSignUp(false); // 로그인 화면으로 전환
+          setIsSignUp(false);
         } else {
           alert(`회원가입 실패: ${data.status_message}`);
         }
@@ -71,7 +65,6 @@ const SignIn: React.FC<SignInProps> = ({ onLogin, onLogout }) => {
         alert('회원가입 중 문제가 발생했습니다.');
       }
     } else {
-      // 로그인 로직
       const storedEmail = localStorage.getItem('email');
       const storedPassword = localStorage.getItem('TMDB-Key');
       const storedToken = localStorage.getItem('authToken');
@@ -87,28 +80,27 @@ const SignIn: React.FC<SignInProps> = ({ onLogin, onLogout }) => {
         if (formData.rememberMe) {
           localStorage.setItem('rememberMe', 'true');
         }
-        navigate('/'); // 메인 페이지로 이동
+        navigate('/');
       } else {
         alert('아이디 또는 비밀번호가 잘못되었습니다.');
       }
     }
   };
 
-  // 로그인 / 회원가입 상태 변경 시 체크박스 초기화
   const toggleSignUp = () => {
     setIsSignUp(!isSignUp);
     setFormData({
       email: '',
       password: '',
       confirmPassword: '',
-      rememberMe: false, // "아이디 기억하기" 체크박스 리셋
-      agreeTerms: false // "약관 동의" 체크박스 리셋
+      rememberMe: false,
+      agreeTerms: false,
     });
   };
 
   return (
     <div className="signin-container transition-container">
-      <div className='logo-container'>
+      <div className="logo-container">
         <img src={logo} className="logo" alt="logo" />
       </div>
       <h2>{isSignUp ? '회원가입' : '로그인'}</h2>
@@ -166,11 +158,7 @@ const SignIn: React.FC<SignInProps> = ({ onLogin, onLogout }) => {
       </form>
 
       <div className="toggle-btns">
-        <button onClick={() => {
-            setIsSignUp(!isSignUp);
-            toggleSignUp();  
-          }}
-        >
+        <button onClick={toggleSignUp}>
           {isSignUp ? '이미 계정이 있나요? 로그인' : '계정이 없나요? 회원가입'}
         </button>
       </div>
