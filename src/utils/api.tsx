@@ -1,3 +1,4 @@
+// /utils/tmdbAPI.ts
 import axios, { AxiosResponse } from 'axios';
 
 // TMDb API 키와 기본 URL
@@ -24,8 +25,16 @@ export interface Movie {
   genre_ids: number[];
 }
 
-// Popular 영화 데이터의 응답 형태 정의
+// 인기 영화 데이터의 응답 형태 정의
 interface PopularMoviesResponse {
+  page: number;
+  results: Movie[];
+  total_pages: number;
+  total_results: number;
+}
+
+// 영화 검색 및 필터링을 위한 타입 정의
+interface MovieSearchResponse {
   page: number;
   results: Movie[];
   total_pages: number;
@@ -45,5 +54,29 @@ export const getPopularMovies = async (page: number = 1): Promise<PopularMoviesR
   }
 };
 
-// tmdbApi 기본 내보내기
+// 영화 검색 함수 (필터링 및 정렬 추가)
+export const searchMovies = async (
+  query: string, 
+  page: number = 1, 
+  genre?: string, 
+  rating?: string, 
+  sortBy?: string
+): Promise<MovieSearchResponse> => {
+  try {
+    const response: AxiosResponse<MovieSearchResponse> = await tmdbApi.get('/search/movie', {
+      params: {
+        query,
+        page,
+        with_genres: genre,
+        vote_average: rating ? `gte:${rating}` : undefined,
+        sort_by: sortBy || 'popularity.desc',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error searching movies:', error);
+    throw error;
+  }
+};
+
 export default tmdbApi;
