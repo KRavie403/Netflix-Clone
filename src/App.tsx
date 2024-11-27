@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import "./App.css";
 import Header from './Header/Header';
 import Home from './pages/Home.tsx';
 import Popular from './pages/Popular.tsx';
