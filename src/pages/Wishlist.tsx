@@ -13,13 +13,34 @@ const Wishlist = () => {
   const [movies, setMovies] = useState<Movie[]>([]); // 찜한 영화 목록
   const [loading, setLoading] = useState<boolean>(false); // 로딩 상태
   const [hasMore, setHasMore] = useState<boolean>(true); // 더 불러올 영화가 있는지
+  const [scrolling, setScrolling] = useState<boolean>(false); // 스크롤 중 여부
   const [topVisible, setTopVisible] = useState<boolean>(false); // "맨 위로 가기" 버튼
+
+  // handleScroll 함수 선언
+  const handleScroll = useCallback(() => {
+    // 스크롤 끝에 도달하면 더 많은 데이터를 로드
+    const bottom =
+      window.innerHeight + document.documentElement.scrollTop ===
+      document.documentElement.offsetHeight;
+
+    if (bottom && !scrolling && hasMore) {
+      setScrolling(true);
+      loadMoreMovies(); // 영화 데이터 더 불러오기
+    }
+
+    // "맨 위로 가기" 버튼 표시
+    if (window.scrollY > 200) {
+      setTopVisible(true);
+    } else {
+      setTopVisible(false);
+    }
+  }, [scrolling, hasMore]);
 
   // 로컬 스토리지에서 찜한 영화 목록 불러오기
   const loadMoviesFromLocalStorage = useCallback(() => {
     const savedMovies = localStorage.getItem('wishlist');
     if (savedMovies) {
-      return JSON.parse(savedMovies) as Movie[];
+      return JSON.parse(savedMovies);
     }
     return [];
   }, []);
@@ -33,40 +54,29 @@ const Wishlist = () => {
     return () => {
       window.removeEventListener('scroll', handleScroll); // 컴포넌트가 언마운트될 때 이벤트 리스너 제거
     };
-  }, []); 
+  }, [handleScroll, loadMoviesFromLocalStorage]); // 의존성 배열에 handleScroll, loadMoviesFromLocalStorage 추가
 
-  // 스크롤 이벤트 처리
-  const handleScroll = useCallback(() => {
-    const bottom =
-      window.innerHeight + document.documentElement.scrollTop ===
-      document.documentElement.offsetHeight;
-
-    if (bottom && !loading && hasMore) {
-      loadMoreMovies(); // 더 많은 영화 불러오기
-    }
-
-    // "맨 위로 가기" 버튼 표시
-    setTopVisible(window.scrollY > 200);
-  }, [loading, hasMore]); // 의존성 배열에 loading과 hasMore 추가
-
-  // 영화 목록 더 불러오기
   const loadMoreMovies = useCallback(() => {
-    if (!hasMore || loading) return; // 더 이상 불러올 영화가 없거나 로딩 중이면 종료
+    if (!hasMore) return;
 
     setLoading(true);
 
-    const allMovies = loadMoviesFromLocalStorage();
-    const nextMovies = allMovies.slice(movies.length, movies.length + 10);
-
-    if (nextMovies.length === 0) {
+    if (movies.length === 0 || movies.length === JSON.parse(localStorage.getItem('wishlist') || '[]').length) {
       setHasMore(false);
+      setLoading(false);
+      return;
     }
 
-    setMovies((prevMovies) => [...prevMovies, ...nextMovies]);
-    setLoading(false);
-  }, [hasMore, loading, movies, loadMoviesFromLocalStorage]);
+    setTimeout(() => {
+      setMovies((prevMovies) => {
+        const newMovies = JSON.parse(localStorage.getItem('wishlist') || '[]').slice(prevMovies.length, prevMovies.length + 10);
+        return [...prevMovies, ...newMovies];
+      });
+      setLoading(false);
+      setScrolling(false);
+    }, 500);
+  }, [hasMore, movies]);  // 의존성 배열에 hasMore, movies 추가
 
-  // "맨 위로 가기" 버튼 클릭
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };

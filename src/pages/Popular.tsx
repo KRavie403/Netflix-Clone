@@ -60,7 +60,7 @@ const Popular: React.FC = () => {
     } else {
       setTopVisible(false);
     }
-  }, [fetchMovies, hasMore, loading, currentPage]);
+  }, [hasMore, loading, currentPage]);
 
   // 페이지 네비게이션 처리
   const handlePagination = (direction: 'next' | 'prev') => {
@@ -91,7 +91,7 @@ const Popular: React.FC = () => {
   // 첫 로드 시 영화 데이터 요청
   useEffect(() => {
     fetchMovies(); // 첫 번째 페이지 데이터 요청
-  }, []);
+  }, [fetchMovies]);
 
   useEffect(() => {
     window.addEventListener('scroll', handleScroll);
