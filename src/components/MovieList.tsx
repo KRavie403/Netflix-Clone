@@ -2,6 +2,7 @@
 import React from 'react';
 import { Movie } from '../utils/api.tsx'; // 또는 api.tsx에서 가져온 Movie 타입
 import MovieCard from './MovieCard.tsx';
+import '../styles/MovieList.module.css';
 
 interface MovieListProps {
   movies: Movie[]; // movies prop의 타입을 명시적으로 설정
