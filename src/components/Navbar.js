@@ -46,6 +46,9 @@ const Navbar = ({ isLoggedIn, onLogout }) => {
     navigate('/signin');
   };
 
+  // 링크가 활성화 되었을 때 해당 스타일을 적용하는 함수
+  const activeStyle = ({ isActive }) => isActive ? { fontWeight: 'bold', color: '#e50914' } : null;
+
   return (
     <nav className={styles.navbar}>
       <div className={styles.logoContainer}>
@@ -55,21 +58,25 @@ const Navbar = ({ isLoggedIn, onLogout }) => {
       </div>
       <ul className={styles.navLinks}>
         <li>
-          <NavLink to="/home" activeClassName={styles.active}>
+          <NavLink to="/" style={activeStyle}>
             홈
           </NavLink>
         </li>
         <li>
-          <NavLink to="/popular" activeClassName={styles.active}>
+          <NavLink to="/popular" style={activeStyle}>
             NEW! 요즘 대세 콘텐츠
           </NavLink>
         </li>
         <li>
-          <NavLink to="/wishlist" activeClassName={styles.active}>
+          <NavLink to="/wishlist" style={activeStyle}>
             내가 찜한 리스트
           </NavLink>
         </li>
-        <li>언어별로 찾아보기</li>
+        <li>
+          <NavLink to="/search" style={activeStyle}>
+            찾아보기
+          </NavLink>
+        </li>
         <li className={styles.searchContainer}>
           <BiSearch
             className={styles.searchIcon}
