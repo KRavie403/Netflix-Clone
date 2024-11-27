@@ -100,7 +100,6 @@ const Popular: React.FC = () => {
     };
   }, [handleScroll]);
 
-  if (loading && currentPage === 1) return <p>Loading movies...</p>;
 
   // 영화 상세 팝업이 열려 있을 때
   const closeMovieDetails = () => {
