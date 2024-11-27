@@ -67,14 +67,6 @@ const Home = () => {
     setGenres(storedGenres);
   }, []);
 
-  const handleSearch = (searchTerm: string) => {
-    if (searchTerm && !recentSearches.includes(searchTerm)) {
-      const updatedSearches = [searchTerm, ...recentSearches].slice(0, 5); // 최대 5개의 검색어만 저장
-      setRecentSearches(updatedSearches);
-      localStorage.setItem('recentSearches', JSON.stringify(updatedSearches));
-    }
-    // 검색 수행 로직 추가
-  };
 
   const toggleWishlist = (movieId: number) => {
     setWishlist(prevState => {
