@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { getPopularMovies, getDiscoverMovies } from '../utils/URL.tsx';
 import { Movie, searchMovies } from '../utils/api.tsx';
 import MovieList from '../components/MovieList.tsx';  // 영화 리스트 컴포넌트
+import MovieFilter from '../components/MovieFilter.tsx';  // MovieFilter 컴포넌트 추가
+import styles from '../styles/Search.module.css';
 
 const Search: React.FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
@@ -72,49 +74,17 @@ const Search: React.FC = () => {
 
   return (
     <div className="search-page">
-      <div className="filters">
-        <h2>영화 필터링</h2>
+      <div className={styles.filters}>
+        <h2 className={styles.h2}>선호하는 설정을 선택하세요</h2>
 
-        {/* 검색창 */}
-        <input
-          type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="영화 검색..."
+        {/* MovieFilter 컴포넌트 사용 */}
+        <MovieFilter 
+          onLanguageChange={(language) => setQuery(language)} 
+          onSortChange={(sort) => setSortBy(sort)} 
+          onReset={resetFilters} 
+          onGenreChange={(genre) => setGenre(genre)}
+          onRatingChange={(rating) => setRating(rating)}
         />
-        
-        {/* 장르 필터 */}
-        <select onChange={(e) => setGenre(e.target.value)} value={genre}>
-          <option value="">장르 선택</option>
-          <option value="28">액션</option>
-          <option value="12">모험</option>
-          <option value="16">애니메이션</option>
-          <option value="35">코미디</option>
-          <option value="80">범죄</option>
-          <option value="99">다큐멘터리</option>
-          <option value="18">드라마</option>
-          <option value="10751">가족</option>
-          {/* 다른 장르들 추가 가능 */}
-        </select>
-
-        {/* 평점 필터 */}
-        <select onChange={(e) => setRating(e.target.value)} value={rating}>
-          <option value="">평점 필터</option>
-          <option value="7">7 이상</option>
-          <option value="8">8 이상</option>
-          <option value="9">9 이상</option>
-        </select>
-
-        {/* 정렬 옵션 */}
-        <select onChange={(e) => setSortBy(e.target.value)} value={sortBy}>
-          <option value="popularity.desc">인기순</option>
-          <option value="release_date.desc">개봉일순</option>
-          <option value="vote_average.desc">평점순</option>
-          {/* 다른 정렬 기준 추가 가능 */}
-        </select>
-
-        {/* 초기화 버튼 */}
-        <button onClick={resetFilters}>초기화</button>
       </div>
 
       {/* 영화 리스트 표시 */}
