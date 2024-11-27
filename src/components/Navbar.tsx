@@ -5,75 +5,75 @@ import logo from '../assets/logo.png';
 import user from '../assets/user.png';
 import { BiSearch } from "react-icons/bi";
 
-const Navbar = ({ isLoggedIn, onLogout }) => {
+// Navbar 컴포넌트에서 onLogout을 props로 받기
+interface NavbarProps {
+  onLogout: () => void;
+}
+
+const Navbar: React.FC<NavbarProps> = ({ onLogout }) => {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [currentUser, setCurrentUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState<string | null>(null);
   const navigate = useNavigate();
 
+  // 로그인 상태 확인 및 사용자 정보 설정
   useEffect(() => {
-    // 로그인 상태에 따라 localStorage에서 사용자 정보 가져오기
     const userEmail = localStorage.getItem('currentUser');
     if (userEmail) {
-      setCurrentUser(userEmail); // 사용자 이메일 상태 업데이트
+      setCurrentUser(userEmail); // 로그인한 사용자 정보 업데이트
     } else {
-      setCurrentUser(null); // 로그인하지 않으면 null로 설정
+      setCurrentUser(null); // 로그인하지 않으면 null 설정
     }
-  }, [isLoggedIn]); // 로그인 상태가 변경될 때마다 업데이트
+  }, []); // 초기 렌더링 시에만 실행 (로그인 상태는 localStorage에서 확인)
 
+  // 드롭다운 토글 함수
   const handleDropdownToggle = () => {
     setDropdownOpen(!dropdownOpen);
   };
 
+  // 검색창 토글 함수
   const handleSearchToggle = () => {
     setSearchOpen(!searchOpen);
   };
 
-  const handleSearchChange = (e) => {
+  // 검색어 입력 처리 함수
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
   };
 
-  const handleSearchSubmit = (e) => {
+  // 검색 폼 제출 처리 함수
+  const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     alert(`검색된 내용: ${searchQuery}`);
     setSearchQuery('');
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('currentUser');
-    onLogout();
-    navigate('/signin');
-  };
-
-  // 링크가 활성화 되었을 때 해당 스타일을 적용하는 함수
-  const activeStyle = ({ isActive }) => isActive ? { fontWeight: 'bold', color: '#e50914' } : null;
-
   return (
     <nav className={styles.navbar}>
       <div className={styles.logoContainer}>
-        <NavLink to="/" activeClassName={styles.active}>
+        <NavLink to="/" className={({ isActive }) => isActive ? styles.active : ''}>
           <img src={logo} alt="N Logo" className={styles.logo} />
         </NavLink>
       </div>
       <ul className={styles.navLinks}>
         <li>
-          <NavLink to="/" style={activeStyle}>
+          <NavLink to="/" className={({ isActive }) => isActive ? styles.active : ''}>
             홈
           </NavLink>
         </li>
         <li>
-          <NavLink to="/popular" style={activeStyle}>
+          <NavLink to="/popular" className={({ isActive }) => isActive ? styles.active : ''}>
             NEW! 요즘 대세 콘텐츠
           </NavLink>
         </li>
         <li>
-          <NavLink to="/wishlist" style={activeStyle}>
+          <NavLink to="/wishlist" className={({ isActive }) => isActive ? styles.active : ''}>
             내가 찜한 리스트
           </NavLink>
         </li>
         <li>
-          <NavLink to="/search" style={activeStyle}>
+          <NavLink to="/search" className={({ isActive }) => isActive ? styles.active : ''}>
             찾아보기
           </NavLink>
         </li>
@@ -101,7 +101,7 @@ const Navbar = ({ isLoggedIn, onLogout }) => {
       </ul>
       <div className={styles.userActions}>
         {currentUser && (
-          <span className={styles.userEmail}> {currentUser}</span>
+          <span className={styles.userEmail}>{currentUser}</span>
         )}
         <img
           src={user}
@@ -111,10 +111,10 @@ const Navbar = ({ isLoggedIn, onLogout }) => {
         />
         {dropdownOpen && (
           <div className={styles.dropdownMenu}>
-            {!isLoggedIn ? (
-              <button onClick={() => navigate('/signin')}>로그아웃</button>
+            {currentUser ? (
+              <button onClick={onLogout}>로그아웃</button> // 로그인 상태일 때 로그아웃 버튼
             ) : (
-              <button onClick={handleLogout}>로그아웃</button>
+              <button onClick={() => navigate('/signin')}>로그인</button> // 로그인 안 한 상태에서 로그인 버튼
             )}
           </div>
         )}
