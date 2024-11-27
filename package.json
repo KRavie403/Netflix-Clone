@@ -1,5 +1,6 @@
 {
   "name": "netflix-clone",
+  "homepage": "https://kravie403.github.io/Netflix-Clone/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
