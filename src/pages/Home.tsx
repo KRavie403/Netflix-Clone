@@ -1,34 +1,55 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getPopularMovies, getNowPlayingMovies, getTopRatedMovies, getUpcomingMovies } from '../utils/URL.ts';
+import { getPopularMovies, getNowPlayingMovies, getTopRatedMovies, getUpcomingMovies } from '../utils/URL.tsx';
 import styles from '../styles/Home.module.css';
 
-const Home = () => {
+// 영화 정보 타입 정의
+interface Movie {
+  id: number;
+  title: string;
+  poster_path: string;
+  overview: string;
+  vote_average: number;
+  release_date: string;
+  genre_ids: number[];
+}
+
+interface MoviesState {
+  popular: Movie[];
+  nowPlaying: Movie[];
+  topRated: Movie[];
+  upcoming: Movie[];
+}
+
+const Home: React.FC = () => {
   const navigate = useNavigate();
-  const [movies, setMovies] = useState({
+  
+  // 상태 변수 타입 지정
+  const [movies, setMovies] = useState<MoviesState>({
     popular: [],
     nowPlaying: [],
     topRated: [],
     upcoming: []
   });
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [hoveredMovie, setHoveredMovie] = useState<number | null>(null);
+  const [wishlist, setWishlist] = useState<number[]>([]);
 
-  const [popularIndex, setPopularIndex] = useState(0);
-  const [nowPlayingIndex, setNowPlayingIndex] = useState(0);
-  const [topRatedIndex, setTopRatedIndex] = useState(0);
-  const [upcomingIndex, setUpcomingIndex] = useState(0);
+  const [popularIndex, setPopularIndex] = useState<number>(0);
+  const [nowPlayingIndex, setNowPlayingIndex] = useState<number>(0);
+  const [topRatedIndex, setTopRatedIndex] = useState<number>(0);
+  const [upcomingIndex, setUpcomingIndex] = useState<number>(0);
 
-  const popularRef = useRef(null);
-  const nowPlayingRef = useRef(null);
-  const topRatedRef = useRef(null);
-  const upcomingRef = useRef(null);
+  const popularRef = useRef<HTMLDivElement | null>(null);
+  const nowPlayingRef = useRef<HTMLDivElement | null>(null);
+  const topRatedRef = useRef<HTMLDivElement | null>(null);
+  const upcomingRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (!localStorage.getItem('email') || !localStorage.getItem('TMDb-Key')) {
       navigate('/signin');
     } else {
-      // 데이터 요청
       const fetchData = async () => {
         try {
           const popular = await getPopularMovies(1);
@@ -57,27 +78,44 @@ const Home = () => {
     return <div>Loading...</div>;
   }
 
-  const visibleMovies = (category, index) => {
+  // 영화 슬라이드 인덱스에 맞춰 영화 리스트 반환
+  const visibleMovies = (category: Movie[], index: number): Movie[] => {
     const startIndex = index;
     const endIndex = index + 6;
     return category.slice(startIndex, endIndex);
   };
 
-  const moveLeft = (ref, setIndex, category, currentIndex) => {
+  // 왼쪽으로 이동
+  const moveLeft = (ref: React.RefObject<HTMLDivElement>, setIndex: React.Dispatch<React.SetStateAction<number>>, category: Movie[], currentIndex: number): void => {
     const list = ref.current;
-    setIndex(Math.max(0, currentIndex - 6));
-    list.scrollLeft -= 300;
+    if (list) {  // ref.current가 null이 아닐 경우에만 실행
+      setIndex(Math.max(0, currentIndex - 6));
+      list.scrollLeft -= 300;
+    }
   };
 
-  const moveRight = (ref, setIndex, category, currentIndex) => {
+  // 오른쪽으로 이동
+  const moveRight = (ref: React.RefObject<HTMLDivElement>, setIndex: React.Dispatch<React.SetStateAction<number>>, category: Movie[], currentIndex: number): void => {
     const list = ref.current;
-    setIndex(Math.min(category.length - 6, currentIndex + 6));
-    list.scrollLeft += 300;
+    if (list) {  // ref.current가 null이 아닐 경우에만 실행
+      setIndex(Math.min(category.length - 6, currentIndex + 6));
+      list.scrollLeft += 300;
+    }
   };
+
+  const toggleWishlist = (id: number) => {
+    if (wishlist.includes(id)) {
+      setWishlist(wishlist.filter((movieId) => movieId !== id));
+    } else {
+      setWishlist([...wishlist, id]);
+    }
+  };
+
 
   return (
     <div className={styles['home-container']}>
 
+      {/* 인기 영화 */}
       <section>
         <h2>인기 영화</h2>
         <div className={styles['movie-list']} ref={popularRef}>
@@ -94,6 +132,12 @@ const Home = () => {
                 <p className={styles['movie-rating']}><strong>평점:</strong> {movie.vote_average}</p>
                 <p><strong>개봉일:</strong> {movie.release_date}</p>
                 <p><strong>장르:</strong> {movie.genre_ids.join(', ')}</p>
+                <button
+                    className={styles['wishlist-button']}
+                    onClick={() => toggleWishlist(movie.id)}
+                  >
+                    {wishlist.includes(movie.id) ? '✔' : '+'}
+                  </button>
               </div>
             </div>
           ))}
@@ -102,6 +146,7 @@ const Home = () => {
         </div>
       </section>
 
+      {/* 현재 상영작 */}
       <section>
         <h2>현재 상영작</h2>
         <div className={styles['movie-list']} ref={nowPlayingRef}>
@@ -126,6 +171,7 @@ const Home = () => {
         </div>
       </section>
 
+      {/* 평점 높은 영화 */}
       <section>
         <h2>평점 높은 영화</h2>
         <div className={styles['movie-list']} ref={topRatedRef}>
@@ -150,6 +196,7 @@ const Home = () => {
         </div>
       </section>
 
+      {/* 다가오는 영화 */}
       <section>
         <h2>다가오는 영화</h2>
         <div className={styles['movie-list']} ref={upcomingRef}>
