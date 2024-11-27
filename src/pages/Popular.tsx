@@ -60,7 +60,7 @@ const Popular: React.FC = () => {
     } else {
       setTopVisible(false);
     }
-  }, [hasMore, loading, currentPage]);
+  }, [hasMore, loading]);
 
   // 페이지 네비게이션 처리
   const handlePagination = (direction: 'next' | 'prev') => {
