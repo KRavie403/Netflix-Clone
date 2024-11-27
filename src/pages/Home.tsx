@@ -2,12 +2,11 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from 'react-router-dom';
 import { getPopularMovies, getNowPlayingMovies, getTopRatedMovies, getUpcomingMovies } from '../utils/URL.tsx';
 import styles from '../styles/Home.module.css';
-import { CSSTransition, TransitionGroup } from 'react-transition-group';
-
 
 // Home 페이지 컴포넌트
 const Home = () => {
   const navigate = useNavigate();
+  
   const [movies, setMovies] = useState({
     popular: [],
     nowPlaying: [],
@@ -18,15 +17,14 @@ const Home = () => {
   const [wishlist, setWishlist] = useState<number[]>([]); // 즐겨찾기 영화 목록
   const [hoveredMovie, setHoveredMovie] = useState<number | null>(null); // 마우스를 올린 영화의 id
   const [recentSearches, setRecentSearches] = useState<string[]>([]); // 최근 검색어
-  const [genres, setGenres] = useState<string[]>([]); // 장르 목록
 
   const [nowPlayingIndex, setNowPlayingIndex] = useState(0);
   const [topRatedIndex, setTopRatedIndex] = useState(0);
   const [upcomingIndex, setUpcomingIndex] = useState(0);
 
-  const nowPlayingRef = useRef(null);
-  const topRatedRef = useRef(null);
-  const upcomingRef = useRef(null);
+  const nowPlayingRef = useRef<HTMLDivElement | null>(null);
+  const topRatedRef = useRef<HTMLDivElement | null>(null);
+  const upcomingRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (!localStorage.getItem('email') || !localStorage.getItem('TMDB-Key')) {
@@ -38,7 +36,7 @@ const Home = () => {
           const nowPlaying = await getNowPlayingMovies(1);
           const topRated = await getTopRatedMovies(1);
           const upcoming = await getUpcomingMovies(1);
-          
+
           setMovies({
             popular: popular.results,
             nowPlaying: nowPlaying.results,
@@ -57,14 +55,11 @@ const Home = () => {
   }, [navigate]);
 
   useEffect(() => {
-    // 로컬 스토리지에서 최근 검색어 및 즐겨찾기 영화 목록 가져오기
     const storedSearches = JSON.parse(localStorage.getItem('recentSearches') || '[]');
     const storedWishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
-    const storedGenres = JSON.parse(localStorage.getItem('genres') || '[]');
     
     setRecentSearches(storedSearches);
     setWishlist(storedWishlist);
-    setGenres(storedGenres);
   }, []);
 
   const handleSearch = (searchTerm: string) => {
@@ -81,39 +76,28 @@ const Home = () => {
       const updatedWishlist = prevState.includes(movieId)
         ? prevState.filter(id => id !== movieId)
         : [...prevState, movieId];
-      
+
       localStorage.setItem('wishlist', JSON.stringify(updatedWishlist)); // 로컬 스토리지에 저장
       return updatedWishlist;
     });
   };
 
-  const handleGenreSelection = (genre: string) => {
-    setGenres(prevGenres => {
-      const updatedGenres = prevGenres.includes(genre)
-        ? prevGenres.filter(g => g !== genre)
-        : [...prevGenres, genre];
-      
-      localStorage.setItem('genres', JSON.stringify(updatedGenres)); // 로컬 스토리지에 저장
-      return updatedGenres;
-    });
-  };
-
-  const visibleMovies = (category, index) => {
+  const visibleMovies = (category: any[], index: number) => {
     const startIndex = index;
     const endIndex = index + 6;
     return category.slice(startIndex, endIndex);
   };
 
-  const moveLeft = (ref, setIndex, category, currentIndex) => {
+  const moveLeft = (ref: React.RefObject<HTMLDivElement>, setIndex: React.Dispatch<React.SetStateAction<number>>, category: any[], currentIndex: number) => {
     const list = ref.current;
     setIndex(Math.max(0, currentIndex - 6));
-    list.scrollLeft -= 300;
+    if (list) list.scrollLeft -= 300;
   };
 
-  const moveRight = (ref, setIndex, category, currentIndex) => {
+  const moveRight = (ref: React.RefObject<HTMLDivElement>, setIndex: React.Dispatch<React.SetStateAction<number>>, category: any[], currentIndex: number) => {
     const list = ref.current;
     setIndex(Math.min(category.length - 6, currentIndex + 6));
-    list.scrollLeft += 300;
+    if (list) list.scrollLeft += 300;
   };
 
   if (loading) {
@@ -230,11 +214,19 @@ const Home = () => {
 
               {hoveredMovie === movie.id && (
                 <div className={styles['movie-popup']}>
-                  <h3>{movie.title}</h3>
-                  <p>{movie.overview}</p>
-                  <button onClick={() => toggleWishlist(movie.id)}>
-                    {wishlist.includes(movie.id) ? '즐겨찾기에서 삭제' : '즐겨찾기에 추가'}
-                  </button>
+                  <div className={styles['popup-wrapper']}>
+                    <div className={styles['popup-content']}>
+                      <h3 className={styles['popup-title']}>{movie.title}</h3>
+                      <p className={styles['popup-info']}>{movie.overview}</p>
+                      <div className={styles['popup-meta']}>
+                        <p><strong>개봉일:</strong> {movie.release_date}</p>
+                        <p><strong>평점:</strong> {movie.vote_average}</p>
+                      </div>
+                      <button className={styles['popup-play']}>
+                        지금 시청하기
+                      </button>
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
