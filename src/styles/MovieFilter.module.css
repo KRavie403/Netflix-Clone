@@ -1,22 +1,20 @@
-/* /styles/MovieFilter.module.css */
-
 .movieFilter {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 0;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 25px;
+    padding: 20px 2%;
     margin-bottom: 30px;
-    width: 100%;
   }
   
   .dropdown {
     display: flex;
     flex-direction: column;
-    margin-right: 20px;
     width: 180px;
   }
   
   .dropdown label {
+    padding: 1%;
     font-size: 16px;
     color: #fff;
     margin-bottom: 8px;
@@ -26,9 +24,9 @@
     padding: 8px;
     font-size: 16px;
     border-radius: 4px;
-    border: 1px solid #ccc;
-    background-color: #fff;
-    color: #333;
+    border: 1px solid #4e4e4e;
+    background-color: #333;
+    color: #ffffff;
   }
   
   .resetButton {
@@ -36,12 +34,10 @@
     color: white;
     border: none;
     padding: 10px 20px;
-    border-radius: 8px;
-    cursor: pointer;
     font-size: 16px;
-  }
-  
-  .resetButton:hover {
-    background-color: #e64a19;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-left: 1%;
+    margin-top: 30px;
   }
   
