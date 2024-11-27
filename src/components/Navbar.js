@@ -72,7 +72,11 @@ const Navbar = ({ isLoggedIn, onLogout }) => {
             내가 찜한 리스트
           </NavLink>
         </li>
-        <li>언어별로 찾아보기</li>
+        <li>
+          <NavLink to="/search" style={activeStyle}>
+            찾아보기
+          </NavLink>
+        </li>
         <li className={styles.searchContainer}>
           <BiSearch
             className={styles.searchIcon}
