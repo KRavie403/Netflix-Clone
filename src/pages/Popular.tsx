@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { getPopularMovies, Movie } from '../api.tsx';
 import styles from '../styles/Popular.module.css';
 
@@ -14,7 +14,7 @@ interface MovieDetails {
 }
 
 const Popular: React.FC = () => {
-  const [movies, setMovies] = useState<Movie[]>([]); // 영화 데이터 배열, Movie 타입 적용
+  const [movies, setMovies] = useState<Movie[]>([]); // 영화 데이터 배열
   const [loading, setLoading] = useState<boolean>(true);
   const [viewMode, setViewMode] = useState<'table' | 'infinite'>('table');
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -25,7 +25,7 @@ const Popular: React.FC = () => {
   const [movieDetails, setMovieDetails] = useState<MovieDetails | null>(null);
 
   // 영화 데이터 로드 함수
-  const fetchMovies = async (page: number = currentPage) => {
+  const fetchMovies = useCallback(async (page: number = currentPage) => {
     if (scrolling) return; // 스크롤 중이면 중복 요청을 막음
     setLoading(true);
     setScrolling(true);
@@ -42,10 +42,10 @@ const Popular: React.FC = () => {
       setLoading(false);
       setScrolling(false);
     }
-  };
+  }, [currentPage, scrolling]);
 
   // 스크롤 끝에 도달하면 다음 페이지 로드
-  const handleScroll = () => {
+  const handleScroll = useCallback(() => {
     const bottom =
       window.innerHeight + document.documentElement.scrollTop ===
       document.documentElement.offsetHeight;
@@ -60,7 +60,7 @@ const Popular: React.FC = () => {
     } else {
       setTopVisible(false);
     }
-  };
+  }, [fetchMovies, hasMore, loading, currentPage]);
 
   // 페이지 네비게이션 처리
   const handlePagination = (direction: 'next' | 'prev') => {
@@ -90,15 +90,15 @@ const Popular: React.FC = () => {
 
   // 첫 로드 시 영화 데이터 요청
   useEffect(() => {
-    fetchMovies(1); // 첫 번째 페이지 데이터 요청
-  }, []);
+    fetchMovies(); // 첫 번째 페이지 데이터 요청
+  }, [fetchMovies]);
 
   useEffect(() => {
     window.addEventListener('scroll', handleScroll);
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  }, [currentPage, loading, scrolling, hasMore]);
+  }, [handleScroll]);
 
   if (loading && currentPage === 1) return <p>Loading movies...</p>;
 
