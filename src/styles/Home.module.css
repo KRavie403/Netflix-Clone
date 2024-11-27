@@ -6,6 +6,8 @@
   padding: 20px;
   background-color: #111;  /* 어두운 배경 */
   color: white;
+  max-width: 100%;  /* 화면 크기에 맞게 최대 크기 설정 */
+  box-sizing: border-box;
 }
 
 /* 영화 목록 스타일 */
@@ -13,11 +15,11 @@
   display: flex;                  /* 가로로 배치 */
   gap: 20px;                      /* 항목 간 간격 */
   width: 100%;
-  max-width: 1300px;
   margin-top: 30px;
   margin-bottom: 50px;
   padding: 0 0px;
   overflow-x: auto;               /* 스크롤바는 보이지 않음 */
+  overflow-y: hidden;
   scroll-behavior: smooth;
   position: relative;             /* 화살표 버튼의 위치를 잡기 위해 */
   scroll-snap-type: x mandatory;
@@ -72,6 +74,7 @@
   transition: transform 0.3s ease;
   flex: 0 0 auto;                 /* 항목이 가로로만 배치되도록 */
   width: 200px;                   /* 각 영화 카드의 너비 */
+  max-width: 100%;
 }
 
 /* 카드 hover 효과 */
@@ -100,7 +103,7 @@
 
 /* 영화 설명 */
 .movie-description {
-  font-size: 14px;
+  font-size: 1.1em;
   color: #ccc;
   height: 50px;
   overflow: hidden;
@@ -111,7 +114,7 @@
 .movie-meta {
   left: 20px;
   margin: 5%;
-  font-size: 14px;
+  font-size: 0.9em;
   color: #bbb;
 }
 

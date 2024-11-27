@@ -90,9 +90,11 @@ const Home = () => {
               />
               <h3 className={styles['movie-title']}>{movie.title}</h3>
               <p className={styles['movie-description']}>{movie.overview}</p>
-              <p><strong>평점:</strong> {movie.vote_average}</p>
-              <p><strong>개봉일:</strong> {movie.release_date}</p>
-              <p><strong>장르:</strong> {movie.genre_ids.join(', ')}</p>
+              <div className={styles['movie-meta']}>
+                <p className={styles['movie-rating']}><strong>평점:</strong> {movie.vote_average}</p>
+                <p><strong>개봉일:</strong> {movie.release_date}</p>
+                <p><strong>장르:</strong> {movie.genre_ids.join(', ')}</p>
+              </div>
             </div>
           ))}
           <button className={`${styles['arrow-button']} ${styles['arrow-left']}`} onClick={() => moveLeft(popularRef, setPopularIndex, movies.popular, popularIndex)}>{"<"}</button>
@@ -136,9 +138,11 @@ const Home = () => {
               />
               <h3 className={styles['movie-title']}>{movie.title}</h3>
               <p className={styles['movie-description']}>{movie.overview}</p>
-              <p><strong>평점:</strong> {movie.vote_average}</p>
-              <p><strong>개봉일:</strong> {movie.release_date}</p>
-              <p><strong>장르:</strong> {movie.genre_ids.join(', ')}</p>
+              <div className={styles['movie-meta']}>
+                <p className={styles['movie-rating']}><strong>평점:</strong> {movie.vote_average}</p>
+                <p><strong>개봉일:</strong> {movie.release_date}</p>
+                <p><strong>장르:</strong> {movie.genre_ids.join(', ')}</p>
+              </div>
             </div>
           ))}
           <button className={`${styles['arrow-button']} ${styles['arrow-left']}`} onClick={() => moveLeft(topRatedRef, setTopRatedIndex, movies.topRated, topRatedIndex)}>{"<"}</button>
@@ -158,9 +162,11 @@ const Home = () => {
               />
               <h3 className={styles['movie-title']}>{movie.title}</h3>
               <p className={styles['movie-description']}>{movie.overview}</p>
-              <p><strong>평점:</strong> {movie.vote_average}</p>
-              <p><strong>개봉일:</strong> {movie.release_date}</p>
-              <p><strong>장르:</strong> {movie.genre_ids.join(', ')}</p>
+              <div className={styles['movie-meta']}>
+                <p className={styles['movie-rating']}><strong>평점:</strong> {movie.vote_average}</p>
+                <p><strong>개봉일:</strong> {movie.release_date}</p>
+                <p><strong>장르:</strong> {movie.genre_ids.join(', ')}</p>
+              </div>
             </div>
           ))}
           <button className={`${styles['arrow-button']} ${styles['arrow-left']}`} onClick={() => moveLeft(upcomingRef, setUpcomingIndex, movies.upcoming, upcomingIndex)}>{"<"}</button>
