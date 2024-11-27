@@ -33,7 +33,7 @@ const Wishlist = () => {
     return () => {
       window.removeEventListener('scroll', handleScroll); // 컴포넌트가 언마운트될 때 이벤트 리스너 제거
     };
-  }, [loadMoviesFromLocalStorage]); // 의존성 배열에 loadMoviesFromLocalStorage 추가
+  }, []); 
 
   // 스크롤 이벤트 처리
   const handleScroll = useCallback(() => {
