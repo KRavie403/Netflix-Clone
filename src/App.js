@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Header from './pages/Header';
+import Header from './Header/Header';
 import Home from './pages/Home';
 import Popular from './pages/Popular';
 import Search from './pages/Search';
