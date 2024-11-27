@@ -2,6 +2,9 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { getPopularMovies, Movie } from '../utils/api.tsx';
 import styles from '../styles/Popular.module.css';
 
+import gridFabIcon from '../assets/grid-fab-icon.png';
+import lineFabIcon from '../assets/line-fab-icon.png';
+
 interface MovieDetails {
   id: number;
   title: string;
@@ -117,13 +120,13 @@ const Popular: React.FC = () => {
           className={viewMode === 'table' ? styles.activeViewMode : ''}
           onClick={() => setViewMode('table')}
         >
-          테이블 뷰
+          <img src={gridFabIcon} alt="Grid View" className={styles.icon} />
         </button>
         <button
           className={viewMode === 'infinite' ? styles.activeViewMode : ''}
           onClick={() => setViewMode('infinite')}
         >
-          무한 스크롤
+          <img src={lineFabIcon} alt="Infinite Scroll" className={styles.icon} />
         </button>
       </div>
 
