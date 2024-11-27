@@ -205,7 +205,6 @@ const Popular: React.FC = () => {
               <h3>{movieDetails.title}</h3>
               <p>평점: {movieDetails.vote_average}</p>
               <p>방영일: {movieDetails.release_date}</p>
-              <p><strong>출연진:</strong> {movieDetails.cast?.join(', ')}</p>
               <p><strong>장르:</strong> {movieDetails.genres?.map(genre => genre.name).join(', ')}</p>
               <p><strong>설명:</strong> {movieDetails.overview}</p>
             </div>
