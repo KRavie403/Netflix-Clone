@@ -75,8 +75,8 @@ const SignIn: React.FC<SignInProps> = ({ onLogin, onLogout }) => {
         storedToken
       ) {
         alert('로그인 성공!');
-        localStorage.setItem('currentUser', formData.email);
-        onLogin();
+        localStorage.setItem('currentUser', formData.email); // 이메일을 localStorage에 저장
+        onLogin(); // 부모 컴포넌트에 로그인 상태 전달
         if (formData.rememberMe) {
           localStorage.setItem('rememberMe', 'true');
         }
