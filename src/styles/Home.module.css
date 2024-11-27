@@ -13,7 +13,7 @@
   display: flex;                  /* 가로로 배치 */
   gap: 20px;                      /* 항목 간 간격 */
   width: 100%;
-  max-width: 1200px;
+  max-width: 1300px;
   margin-top: 30px;
   margin-bottom: 50px;
   padding: 0 0px;
@@ -91,7 +91,7 @@
 .movie-title {
   font-size: 18px;
   font-weight: bold;
-  margin-bottom: 8px;
+  margin: 8px 10px 10px;
   color: #ffcc00; /* 제목에 노란색 포인트 */
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -104,14 +104,14 @@
   color: #ccc;
   height: 50px;
   overflow: hidden;
-  margin-bottom: 8px;
+  margin: 8px 10px 10px;
 }
 
 /* 영화 메타 정보(평점, 개봉일 등) */
 .movie-meta {
-  display: flex;
-  justify-content: space-between;
-  font-size: 12px;
+  left: 20px;
+  margin: 5%;
+  font-size: 14px;
   color: #bbb;
 }
 
