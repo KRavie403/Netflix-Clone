@@ -16,7 +16,6 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const [wishlist, setWishlist] = useState<number[]>([]); // 즐겨찾기 영화 목록
   const [hoveredMovie, setHoveredMovie] = useState<number | null>(null); // 마우스를 올린 영화의 id
-  const [recentSearches, setRecentSearches] = useState<string[]>([]); // 최근 검색어
 
   const [nowPlayingIndex, setNowPlayingIndex] = useState(0);
   const [topRatedIndex, setTopRatedIndex] = useState(0);
@@ -55,13 +54,9 @@ const Home = () => {
   }, [navigate]);
 
   useEffect(() => {
-    const storedSearches = JSON.parse(localStorage.getItem('recentSearches') || '[]');
     const storedWishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
-    
-    setRecentSearches(storedSearches);
     setWishlist(storedWishlist);
   }, []);
-
 
   const toggleWishlist = (movieId: number) => {
     setWishlist(prevState => {
