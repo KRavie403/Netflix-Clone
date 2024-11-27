@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { getPopularMovies, Movie } from '../api.tsx';
+import { getPopularMovies, Movie } from '../utils/api.tsx';
 import styles from '../styles/Popular.module.css';
 
 interface MovieDetails {
