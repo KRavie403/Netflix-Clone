@@ -70,7 +70,7 @@ const Search: React.FC = () => {
   useEffect(() => {
     setMovies([]); // 기존 리스트 초기화
     fetchMovies();
-  }, [query, genre, rating, sortBy, page]);
+  }, [query, genre, rating, sortBy, page, fetchMovies]);
 
   return (
     <div className="search-page">
