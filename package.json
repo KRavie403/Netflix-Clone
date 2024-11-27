@@ -1,5 +1,6 @@
 {
   "name": "netflix-clone",
+  "homepage": "https://relaxed-sorbet-b91d04.netlify.app/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
