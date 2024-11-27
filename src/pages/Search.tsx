@@ -1,11 +1,11 @@
 import React from "react";
 
-function Search() {
+const Search: React.FC = () => {
     return (
       <>
         <h1>Search</h1>
       </>
     );
-  }
-  
-  export default Search;
+}
+
+export default Search;

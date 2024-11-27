@@ -1,20 +1,31 @@
 import React, { useEffect, useState } from 'react';
-import { getPopularMovies } from '../api';
+import { getPopularMovies, Movie } from '../api.tsx';
 import styles from '../styles/Popular.module.css';
 
-const Popular = () => {
-  const [movies, setMovies] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [viewMode, setViewMode] = useState('table');
-  const [currentPage, setCurrentPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
-  const [scrolling, setScrolling] = useState(false);
-  const [topVisible, setTopVisible] = useState(false);
-  const [selectedMovie, setSelectedMovie] = useState(null);
-  const [movieDetails, setMovieDetails] = useState(null);
+interface MovieDetails {
+  id: number;
+  title: string;
+  overview: string;
+  release_date: string;
+  vote_average: number;
+  poster_path: string;
+  genres: Array<{ name: string }>;
+  cast: string[];
+}
+
+const Popular: React.FC = () => {
+  const [movies, setMovies] = useState<Movie[]>([]); // 영화 데이터 배열, Movie 타입 적용
+  const [loading, setLoading] = useState<boolean>(true);
+  const [viewMode, setViewMode] = useState<'table' | 'infinite'>('table');
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [hasMore, setHasMore] = useState<boolean>(true);
+  const [scrolling, setScrolling] = useState<boolean>(false);
+  const [topVisible, setTopVisible] = useState<boolean>(false);
+  const [selectedMovie, setSelectedMovie] = useState<number | null>(null);
+  const [movieDetails, setMovieDetails] = useState<MovieDetails | null>(null);
 
   // 영화 데이터 로드 함수
-  const fetchMovies = async (page = currentPage) => {
+  const fetchMovies = async (page: number = currentPage) => {
     if (scrolling) return; // 스크롤 중이면 중복 요청을 막음
     setLoading(true);
     setScrolling(true);
@@ -52,7 +63,7 @@ const Popular = () => {
   };
 
   // 페이지 네비게이션 처리
-  const handlePagination = (direction) => {
+  const handlePagination = (direction: 'next' | 'prev') => {
     if (direction === 'next' && hasMore) {
       fetchMovies(currentPage + 1);
     } else if (direction === 'prev' && currentPage > 1) {
@@ -66,10 +77,10 @@ const Popular = () => {
   };
 
   // 영화 상세 정보 가져오기
-  const fetchMovieDetails = async (movieId) => {
+  const fetchMovieDetails = async (movieId: number) => {
     try {
       const response = await fetch(`https://api.themoviedb.org/3/movie/${movieId}?api_key=${process.env.REACT_APP_TMDB_API_KEY}&language=ko-KR`);
-      const data = await response.json();
+      const data: MovieDetails = await response.json();
       setMovieDetails(data);
       setSelectedMovie(movieId); // 현재 선택된 영화 설정
     } catch (error) {
@@ -194,7 +205,6 @@ const Popular = () => {
               <h3>{movieDetails.title}</h3>
               <p>평점: {movieDetails.vote_average}</p>
               <p>방영일: {movieDetails.release_date}</p>
-              <p><strong>출연진:</strong> {movieDetails.cast?.join(', ')}</p>
               <p><strong>장르:</strong> {movieDetails.genres?.map(genre => genre.name).join(', ')}</p>
               <p><strong>설명:</strong> {movieDetails.overview}</p>
             </div>

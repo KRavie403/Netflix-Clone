@@ -3,8 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import '../styles/SignIn.css';
 import logo from '../assets/logo.png';
 
-const SignIn = ({ onLogin }) => {
-  const [isSignUp, setIsSignUp] = useState(false); // 로그인 / 회원가입 토글 상태
+// SignInProps 인터페이스 정의
+interface SignInProps {
+  onLogin: () => void;
+  onLogout: () => void;
+}
+
+const SignIn: React.FC<SignInProps> = ({ onLogin, onLogout }) => {
+  const [isSignUp, setIsSignUp] = useState<boolean>(false); // 로그인 / 회원가입 토글 상태
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -18,13 +24,13 @@ const SignIn = ({ onLogin }) => {
   const API_KEY = process.env.REACT_APP_TMDB_API_KEY;
 
   // 입력값 변경 처리
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
     setFormData({ ...formData, [name]: type === 'checkbox' ? checked : value });
   };
 
   // 로그인/회원가입 처리
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
@@ -54,7 +60,7 @@ const SignIn = ({ onLogin }) => {
         if (data.success) {
           localStorage.setItem('authToken', data.request_token); // 토큰 저장
           localStorage.setItem('email', formData.email); // 이메일 저장
-          localStorage.setItem('TMDb-Key', formData.password); // 비밀번호 저장
+          localStorage.setItem('TMDB-Key', formData.password); // 비밀번호 저장
           alert('회원가입이 완료되었습니다. 로그인 화면으로 이동합니다.');
           setIsSignUp(false); // 로그인 화면으로 전환
         } else {
@@ -67,7 +73,7 @@ const SignIn = ({ onLogin }) => {
     } else {
       // 로그인 로직
       const storedEmail = localStorage.getItem('email');
-      const storedPassword = localStorage.getItem('TMDb-Key');
+      const storedPassword = localStorage.getItem('TMDB-Key');
       const storedToken = localStorage.getItem('authToken');
 
       if (
@@ -99,7 +105,6 @@ const SignIn = ({ onLogin }) => {
       agreeTerms: false // "약관 동의" 체크박스 리셋
     });
   };
-
 
   return (
     <div className="signin-container transition-container">
