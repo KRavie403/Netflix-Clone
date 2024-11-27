@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { getPopularMovies, getDiscoverMovies } from '../utils/URL.tsx';
 import { Movie, searchMovies } from '../utils/api.tsx';
 import MovieList from '../components/MovieList.tsx';  // 영화 리스트 컴포넌트
@@ -17,7 +17,7 @@ const Search: React.FC = () => {
   const [hasMore, setHasMore] = useState<boolean>(true); // 인피니티 스크롤에서 더 많은 결과가 있는지 확인
 
   // 영화 데이터를 가져오는 함수
-  const fetchMovies = async () => {
+  const fetchMovies = useCallback(async () => {
     setLoading(true);
     try {
       let data;
@@ -46,7 +46,7 @@ const Search: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [query, genre, rating, sortBy, page]);  // 의존성 배열에 필요한 상태값들 추가
 
   // 필터 초기화 함수
   const resetFilters = () => {
@@ -61,7 +61,7 @@ const Search: React.FC = () => {
 
   // 페이지 변경 시 호출되는 함수
   const loadMoreMovies = () => {
-    if (page < totalPages) {
+    if (hasMore && page < totalPages) {
       setPage(page + 1);
     }
   };
@@ -70,7 +70,7 @@ const Search: React.FC = () => {
   useEffect(() => {
     setMovies([]); // 기존 리스트 초기화
     fetchMovies();
-  }, [query, genre, rating, sortBy, page, fetchMovies]);
+  }, [fetchMovies]); // fetchMovies 함수가 변경될 때마다 호출
 
   return (
     <div className="search-page">
