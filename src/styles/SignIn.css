@@ -1,0 +1,108 @@
+/* SignIn.css */
+
+/* 전체 배경 설정 */
+body {
+    background-color: black;
+    color: white;
+    font-family: 'Helvetica', sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* 로그인 페이지 컨테이너 */
+  .signin-container {
+    width: 350px;
+    margin: 100px auto;
+    padding: 20px;
+    background-color: #141414;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+  }
+
+  .logo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 120px;
+  }
+  
+  .logo {
+      height: 120px;
+  }
+  
+  /* 입력 필드 스타일 */
+  .signin-container input {
+    width: 92%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #333;
+    border-radius: 4px;
+    background-color: #333;
+    color: white;
+    font-size: 16px;
+  }
+  
+  /* 입력 필드 포커스 시 색상 */
+  .signin-container input:focus {
+    border-color: #e50914;
+    outline: none;
+  }
+  
+  /* 로그인 버튼 스타일 */
+  .signin-container button {
+    width: 100%;
+    padding: 14px;
+    background-color: #e50914;
+    border: none;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+  }
+  
+  /* 'Remember me'와 '약관 동의' 텍스트 스타일 */
+  .signin-container .remember-me,
+  .signin-container .terms {
+    text-align: center;
+    font-size: 14px;
+    color: #b3b3b3;
+    white-space: nowrap;
+  }
+  
+  .signin-container .remember-me input,
+  .signin-container .terms input {
+    margin-right: 8px;
+  }
+  
+  /* 회원가입과 로그인 버튼 전환 영역 */
+  .toggle-btns {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    color: #b3b3b3;
+  }
+  
+  .toggle-btns button {
+    background: none;
+    border: none;
+    color: #e50914;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 8px;
+  }
+  
+  .toggle-btns button:hover {
+    text-decoration: underline;
+  }
+  
+  /* 로그인-회원가입 전환 효과 */
+  .transition-container {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  
+  @keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+  
