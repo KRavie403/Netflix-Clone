@@ -8,6 +8,7 @@
   color: white;
   max-width: 100%;  /* 화면 크기에 맞게 최대 크기 설정 */
   box-sizing: border-box;
+  margin-top:5%;
 }
 
 /* 영화 목록 스타일 */
