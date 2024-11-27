@@ -1,47 +1,50 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink, useNavigate } from "react-router-dom";
 import styles from '../styles/Navbar.module.css';
 import logo from '../assets/logo.png';
 import user from '../assets/user.png';
 import { BiSearch } from "react-icons/bi";
 
-const Navbar = () => {
-  const [searchOpen, setSearchOpen] = useState(false); // 검색창 열기/닫기 상태
-  const [searchQuery, setSearchQuery] = useState(''); // 검색어 상태
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // 로그인 상태
-  const [dropdownOpen, setDropdownOpen] = useState(false); // 드롭다운 메뉴 열기/닫기 상태
+const Navbar = ({ isLoggedIn, onLogout }) => {
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
   const navigate = useNavigate();
 
-  // 프로필 클릭 시 드롭다운 열기/닫기
+  useEffect(() => {
+    console.log(`로그인 상태: ${isLoggedIn ? '로그인됨' : '로그아웃됨'}`);
+    if (isLoggedIn) {
+      const user = localStorage.getItem('currentUser');
+      setCurrentUser(user);
+    } else {
+      setCurrentUser(null);
+    }
+  }, [isLoggedIn]);
+
   const handleDropdownToggle = () => {
     setDropdownOpen(!dropdownOpen);
   };
 
-  // 로그아웃 함수
-  const handleLogout = () => {
-    setIsLoggedIn(false); // 로그아웃 후 로그인 상태 false로 변경
-    navigate("/login"); // 로그인 화면으로 이동
-  };
-
-  // 로그인 화면으로 이동
-  const handleLogin = () => {
-    navigate("/login"); // 로그인 화면으로 이동
-  };
-
   const handleSearchToggle = () => {
-    setSearchOpen(!searchOpen); // 검색창 열고 닫기 토글
+    setSearchOpen(!searchOpen);
   };
 
   const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value); // 검색어 업데이트
+    setSearchQuery(e.target.value);
   };
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    alert(`검색된 내용: ${searchQuery}`); // 검색 동작 (알림으로 표시)
-    setSearchQuery(''); // 입력 초기화
+    alert(`검색된 내용: ${searchQuery}`);
+    setSearchQuery('');
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('currentUser');
+    onLogout();
+    navigate('/signin');
+  };
 
   return (
     <nav className={styles.navbar}>
@@ -52,7 +55,7 @@ const Navbar = () => {
       </div>
       <ul className={styles.navLinks}>
         <li>
-          <NavLink to="/home" activeClassName={styles.active}>
+          <NavLink to="/" activeClassName={styles.active}>
             홈
           </NavLink>
         </li>
@@ -90,6 +93,9 @@ const Navbar = () => {
         </li>
       </ul>
       <div className={styles.userActions}>
+        {currentUser && (
+          <span className={styles.userEmail}> {currentUser}</span>
+        )}
         <img
           src={user}
           alt="User Avatar"
@@ -99,7 +105,7 @@ const Navbar = () => {
         {dropdownOpen && (
           <div className={styles.dropdownMenu}>
             {!isLoggedIn ? (
-              <button onClick={handleLogin}>로그인</button>
+              <button onClick={() => navigate('/signin')}>로그인</button>
             ) : (
               <button onClick={handleLogout}>로그아웃</button>
             )}
