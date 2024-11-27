@@ -51,7 +51,7 @@ const Popular: React.FC = () => {
       document.documentElement.offsetHeight;
     if (bottom && hasMore && !loading) {
       setScrolling(true);
-      fetchMovies(currentPage + 1); // 다음 페이지 데이터를 요청
+      // fetchMovies(currentPage + 1); // 다음 페이지 데이터를 요청
     }
 
     // '맨 위로 가기' 버튼 표시
